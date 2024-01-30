@@ -9,8 +9,11 @@ namespace GentleRain.RYS.Lib
 {
     public class User : BaseEntity
     {
-        public string Name { get; set; } = string.Empty;        
+        public string Name { get; set; } = string.Empty;
+        public int IsDelete { get; set; }
+        public int IsEnable { get; set; }
         public Position? Position { get; set; }
+        public Tax? Tax { get; set; }
         public User(string name, string code, Position posi)
         {
             Name = name;
@@ -18,6 +21,13 @@ namespace GentleRain.RYS.Lib
             Position = posi;
         }
 
+        public User(string name, string code, Position posi, Tax tax)
+        {
+            Name = name;
+            Code = code;
+            Position = posi;
+            Tax = tax;
+        }
 
     }
 }

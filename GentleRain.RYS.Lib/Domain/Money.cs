@@ -11,17 +11,18 @@ namespace GentleRain.RYS.Lib
     /// </summary>
     public class Money
     {
-        private IMoneyOption option = new AmountMoneyOption();
+        private readonly IMoneyOption option = new AmountMoneyOption();
         /// <summary>
         /// 金额
         /// </summary>
-        internal decimal Value { get; set; }
+        private decimal Value;
 
-
-        public Money(decimal value)
+        public Money(IMoneyOption option)
         {
-            Value = value;
+            this.option = option;
+            Value = 0;
         }
+
 
         public Money(decimal value, IMoneyOption option)
         {
@@ -29,16 +30,20 @@ namespace GentleRain.RYS.Lib
             this.option = option;
         }
 
+
+
         public decimal GetValue()
         {
-            return option.GetValue(this);
+            return option.GetValue(Value);
         }
 
-        public string View()
+        public static Money operator +(Money x) => x;
+
+        public static Money operator -(Money x)
         {
-            return option.View(this);
+            x.Value = -x.Value;
+            return x;
         }
-
 
         public static Money operator +(Money x, decimal v)
         {
@@ -93,6 +98,11 @@ namespace GentleRain.RYS.Lib
         }
         public static bool operator ==(Money x, Money y) => x.Equals(y);
         public static bool operator !=(Money x, Money y) => !(x.Value == y.Value);
+        public static bool operator >(Money x, Money y) => x.Value > y.Value;
+        public static bool operator >=(Money x, Money y) => x.Value >= y.Value;
+        public static bool operator <(Money x, Money y) => x.Value < y.Value;
+        public static bool operator <=(Money x, Money y) => x.Value <= y.Value;
+        public static implicit operator decimal(Money x) => x.Value;        
         public override bool Equals(object? obj)
         {            
             return obj is Money money && Value == money.Value;
@@ -102,6 +112,13 @@ namespace GentleRain.RYS.Lib
         {
             return HashCode.Combine(Value);
         }
+
+        public override string ToString()
+        {
+            return option.View(Value);
+        }
+
+
     }
 
 }

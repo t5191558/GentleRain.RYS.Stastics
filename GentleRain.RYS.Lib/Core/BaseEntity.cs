@@ -8,7 +8,7 @@ namespace GentleRain.RYS.Lib
 {
     public class BaseEntity
     {
-        public string Code { get; set; } = string.Empty;
+        public string Code { get; protected set; } = string.Empty;
         public static bool operator ==(BaseEntity left, BaseEntity right) => left.Equals(right);
         public static bool operator !=(BaseEntity left, BaseEntity right) => !(left == right);
 

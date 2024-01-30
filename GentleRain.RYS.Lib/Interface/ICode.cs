@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace GentleRain.RYS.Lib
 {
-    public interface IMoneyOption
+    public interface ICode
     {
-        decimal GetValue(Money money);
-        string View(Money money);
+        string Generator();
     }
 }
