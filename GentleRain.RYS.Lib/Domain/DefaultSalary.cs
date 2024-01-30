@@ -10,5 +10,15 @@ namespace GentleRain.RYS.Lib
     {
         public string Name { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public string Desc { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public decimal GetMoney(ICollection<Order> pureSalesAmount)
+        {
+            throw new NotImplementedException();
+        }
+
+        public decimal GetRatio(ICollection<Order> salesAmount)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

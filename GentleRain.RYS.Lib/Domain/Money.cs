@@ -75,17 +75,17 @@ namespace GentleRain.RYS.Lib
 
         public static Money operator +(Money x, Money y)
         {
-            return new Money(x.Value + y.Value);
+            return new Money(x.Value + y.Value,x.option);
         }
 
         public static Money operator -(Money x, Money y)
         {
-            return new Money(x.Value - y.Value);
+            return new Money(x.Value - y.Value, x.option);
         }
 
         public static Money operator *(Money x, Money y)
         {
-            return new Money(x.Value * y.Value);
+            return new Money(x.Value * y.Value, x.option);
         }
 
         public static Money operator /(Money x, Money y)
@@ -94,7 +94,7 @@ namespace GentleRain.RYS.Lib
             {
                 throw new DivideByZeroException();
             }
-            return new Money(x.Value / y.Value);
+            return new Money(x.Value / y.Value, x.option);
         }
         public static bool operator ==(Money x, Money y) => x.Equals(y);
         public static bool operator !=(Money x, Money y) => !(x.Value == y.Value);
