@@ -9,6 +9,7 @@ namespace GentleRain.RYS.Lib
     public class BaseEntity
     {
         public string Code { get; protected set; } = string.Empty;
+        protected ICode CodeProvider = new CodeGenerator();
         public static bool operator ==(BaseEntity left, BaseEntity right) => left.Equals(right);
         public static bool operator !=(BaseEntity left, BaseEntity right) => !(left == right);
 

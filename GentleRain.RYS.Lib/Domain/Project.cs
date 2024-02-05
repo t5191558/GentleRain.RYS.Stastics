@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GentleRain.RYS.Lib.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,14 @@ namespace GentleRain.RYS.Lib
 {
     public class Project : BaseEntity
     {
+        /// <summary>
+        /// 项目名称
+        /// </summary>
         public string Name { get; set; } = string.Empty;
+        /// <summary>
+        /// 收入(业绩)
+        /// </summary>
+        public ProductRevenue  Revenue{ get; set; }
         /// <summary>
         /// 单价
         /// </summary>
@@ -40,10 +48,7 @@ namespace GentleRain.RYS.Lib
             IsEnable = isEnable;
         }
 
-        public Order Sell(User user, DateTime dt)
-        {
-            return new Order(user, dt, this);
-        }
+        
 
     }
 }

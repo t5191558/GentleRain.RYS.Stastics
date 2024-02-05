@@ -29,5 +29,10 @@ namespace GentleRain.RYS.Lib
             Tax = tax;
         }
 
+        public Order CreateOrder(Project proj, int count)
+        {
+            return new Order(this, DateTime.Now, proj, count);
+        }
+
     }
 }

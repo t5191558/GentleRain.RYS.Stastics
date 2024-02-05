@@ -8,32 +8,29 @@ namespace GentleRain.RYS.Lib
 {
     public class Order
     {
-        public ICollection<Project> Projects { get; set; } = new List<Project>();
+        public Dictionary<Project, int> Projects { get; set; } = new Dictionary<Project, int>();
         public DateTime CreateTime { get; set; }
         public User User { get; set; }
-        public Order(User user,DateTime dt, Project proj)
+        public Order(User user,DateTime dt, Project proj, int count)
         {
             User = user;
             CreateTime = dt;
-            Projects.Add(proj);
+            Projects.TryAdd(proj, count);
         }        
 
         public Money SalesAmount()
         {
-            decimal total = Projects.Sum(p => p.SalesAmount);
-            return new Money(total, new AmountMoneyOption());
+            throw new Exception();
         }
 
         public Money PureSalesAmount()
         {
-            decimal total = Projects.Sum(p => p.PureSalesAmount);
-            return new Money(total, new AmountMoneyOption());
+            throw new Exception();
         }
 
         public Money SalaryAmount()
         {
-            decimal total = Projects.Sum(p => p.SalaryAmount);
-            return new Money(total, new AmountMoneyOption());
+            throw new Exception();
         }
 
 

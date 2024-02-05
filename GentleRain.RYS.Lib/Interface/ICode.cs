@@ -10,4 +10,14 @@ namespace GentleRain.RYS.Lib
     {
         string Generator();
     }
+
+    public enum CodeObject 
+    { 
+        User,
+        Position,
+        Revenue,
+        Project,
+        Order
+    }
+
 }

@@ -16,27 +16,7 @@ namespace GentleRain.RYS.Lib
         public int IsDelete { get; set; }
         public int IsEnable { get; set; }
 
-        public ISalary Salary { get; set; }
-        private readonly ICode _code;
-
-        public Position(ICode code)
-        {
-            _code = code;
-            Salary = new DefaultSalary();
-        }
-
-        public Position(string name, string code, string desc, int isDelete, int isEnable, ISalary salary)
-        {
-            Name = name;
-            Code = code;
-            Desc = desc;
-            IsDelete = isDelete;
-            IsEnable = isEnable;
-            Salary = salary;
-            _code = new CodeGenerator();
-        }
-
-
+        public IRevenueRatio Ratio { get; set; } = new RevenueRatio();
 
 
     }
