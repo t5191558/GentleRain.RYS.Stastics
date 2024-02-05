@@ -11,11 +11,11 @@ namespace GentleRain.RYS.Lib
         /// <summary>
         /// 社保
         /// </summary>
-        public Money SocialSecurity { get; set; } = new Money(new AmountMoneyOption());
+        public Money SocialSecurity { get; set; } = new Money(new MoneyOption());
         /// <summary>
         /// 住房公积金
         /// </summary>
-        public Money HousingFund { get; set; } = new Money(new AmountMoneyOption());
+        public Money HousingFund { get; set; } = new Money(new MoneyOption());
 
     }
 }

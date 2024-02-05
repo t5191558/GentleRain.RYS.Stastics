@@ -8,15 +8,26 @@ namespace GentleRain.RYS.Lib
 {
     public class Order
     {
-        public Dictionary<Project, int> Projects { get; set; } = new Dictionary<Project, int>();
+        private Dictionary<Project, int> Projects = new Dictionary<Project, int>();
         public DateTime CreateTime { get; set; }
         public User User { get; set; }
-        public Order(User user,DateTime dt, Project proj, int count)
+        public Order(User user,DateTime dt)
         {
             User = user;
             CreateTime = dt;
-            Projects.TryAdd(proj, count);
-        }        
+        }
+        
+        public void AddProject(Project project, int count)
+        {
+            if (Projects.ContainsKey(project))
+            {
+                Projects[project] += count;
+            }
+            else
+            {
+                Projects.Add(project, count);
+            }
+        }
 
         public Money SalesAmount()
         {

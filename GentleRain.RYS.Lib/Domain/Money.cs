@@ -11,25 +11,24 @@ namespace GentleRain.RYS.Lib
     /// </summary>
     public class Money
     {
-        private readonly IMoneyOption option = new AmountMoneyOption();
+        private readonly IMoneyOption option = new MoneyOption();
         /// <summary>
         /// 金额
         /// </summary>
         private decimal Value;
 
+        public Money() { }
+
         public Money(IMoneyOption option)
         {
             this.option = option;
-            Value = 0;
         }
-
 
         public Money(decimal value, IMoneyOption option)
         {
             Value = value;
             this.option = option;
         }
-
 
 
         public decimal GetValue()

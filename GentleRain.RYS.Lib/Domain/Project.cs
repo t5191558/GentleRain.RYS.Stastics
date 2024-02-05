@@ -20,35 +20,21 @@ namespace GentleRain.RYS.Lib
         /// <summary>
         /// 单价
         /// </summary>
-        public Money UnitPrice { get; set; } = new Money(new PriceMoneyOption());        
-        /// <summary>
-        /// 业绩-实际销售金额
-        /// </summary>
-        public Money SalesAmount { get; set; } = new Money(new AmountMoneyOption());
-        /// <summary>
-        /// 纯业绩-给员工算提成的金额
-        /// </summary>
-        public Money PureSalesAmount { get; set; }  = new Money(new AmountMoneyOption());
-        /// <summary>
-        /// 提成金额
-        /// </summary>
-        public Money SalaryAmount { get; set; } = new Money(new AmountMoneyOption());
+        public Money UnitPrice { get; set; } = new Money(new MoneyOption());        
         public int IsDelete { get; set; }
         public int IsEnable { get; set; }
 
-        public Project(string name,string code, decimal unitPrice, decimal salesAmount,decimal pureSalesAmount, decimal salaryAmount, int isDelete, int isEnable)
+        public Project(string name,string code, decimal unitPrice, ProductRevenue revenue, int isDelete, int isEnable)
         {
             Name = name;
             Code = code;
-            UnitPrice = new Money(unitPrice,new PriceMoneyOption());
-            SalesAmount = new Money(salesAmount, new AmountMoneyOption());
-            PureSalesAmount = new Money(pureSalesAmount, new AmountMoneyOption());
-            SalaryAmount = new Money(salaryAmount, new AmountMoneyOption());
+            UnitPrice = new Money(unitPrice,new MoneyOption());
+            Revenue = revenue;
             IsDelete = isDelete;
             IsEnable = isEnable;
         }
 
-        
+
 
     }
 }
