@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GentleRain.RYS.Lib.Interface;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,28 +8,69 @@ using System.Xml.Linq;
 
 namespace GentleRain.RYS.Lib
 {
-    public class User : BaseEntity
+    public class User : BaseEntity, IUser
     {
         public string Name { get; set; } = string.Empty;
         public int IsDelete { get; set; }
         public int IsEnable { get; set; }
-        public Position? Position { get; set; }
-        public Tax? Tax { get; set; }
-        public User(string name, string code, Position posi)
+        private TaxModel _tax = new TaxModel();
+        private PositionModel _position = new PositionModel();
+        public IPosition Position { get; set; }
+        public ITax Tax { get; set; }
+        public IUserRepository UserRepository { get; set; }
+        public User(IPosition position, ITax tax, IUserRepository userRepository)
         {
-            Name = name;
-            Code = code;
-            Position = posi;
-        }
-
-        public User(string name, string code, Position posi, Tax tax)
-        {
-            Name = name;
-            Code = code;
-            Position = posi;
+            Position = position;
             Tax = tax;
+            UserRepository = userRepository;
         }
 
+        private void ExistsByName(string name) 
+        {
+            User olduser = UserRepository.GetByNameAsync(name).Result;
+            if (olduser == this)
+                throw new UserSameNameException(name);
+        }
 
+        public UserModel Create(UserCreateModel user)
+        {
+            if(!string.IsNullOrWhiteSpace(user.TaxCode))
+            {
+                _tax = Tax.GetFromCode(user.TaxCode);
+            }
+            _position = Position.GetFromCode(user.PositionCode);
+            ExistsByName(user.Name);
+            UserRepository.AddAsync(this);
+        }
+
+        public void Update(UserUpdateModel user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(string code)
+        {
+            throw new NotImplementedException();
+        }
+
+        public UserModel GetFromCode(string code)
+        {
+            throw new NotImplementedException();
+        }
+
+        public UserModel GetFromName(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<UserModel> GetFromPosition(string positionCode)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<UserModel> Gets()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

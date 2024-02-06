@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace GentleRain.RYS.Lib.Interface
 {
-    public interface IUserRepository<TEntity,TModel> : IRepository<TModel> where TEntity : class where TModel : User
+    public interface IUserRepository : IRepository<User> 
     {
-        Task<IEnumerable<TModel>> WhereAsync(Expression<Func<TEntity, bool>> predicate);
+        Task<User> GetByNameAsync(string name);
+        Task<IEnumerable<User>> WhereAsync(Expression<Func<User, bool>> predicate);
     }
 }

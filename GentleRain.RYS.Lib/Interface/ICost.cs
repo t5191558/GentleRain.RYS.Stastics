@@ -30,6 +30,13 @@ namespace GentleRain.RYS.Lib
         /// <param name="month"></param>
         /// <exception cref="CostNotFoundException"></exception>"
         void Delete(string code);
+        /// <summary>
+        /// 获取费用
+        /// </summary>
+        /// <param name="userCode"></param>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
         CostModel Get(string userCode, int year, int month);
 
     }
