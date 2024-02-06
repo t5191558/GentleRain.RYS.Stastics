@@ -29,6 +29,8 @@ namespace GentleRain.RYS.Lib
             }
         }
 
+
+
         public Money SalesAmount()
         {
             throw new Exception();

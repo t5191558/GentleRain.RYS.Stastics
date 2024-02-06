@@ -16,7 +16,6 @@ namespace GentleRain.RYS.Lib
         public int IsDelete { get; set; }
         public int IsEnable { get; set; }
 
-        public IRevenueRatio Ratio { get; set; } = new RevenueRatio();
 
 
     }

@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace GentleRain.RYS.Lib
 {
-    public class RevenueRatio : IRevenueRatio
+    public class PositionDisableException : Exception
     {
-        public decimal GetRatio(Revenue revenue)
+        public PositionDisableException(string code) : base(string.Format(ExceptionMessageText.PositionDisable, code))
         {
-            return 1;
         }
     }
 }
