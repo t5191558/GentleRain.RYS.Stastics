@@ -13,7 +13,7 @@ namespace GentleRain.RYS.Lib.Interface
         Task<List<T>> GetAllAsync();
         
 
-        Task AddAsync(T entity);
+        Task<T> AddAsync(T entity);
         Task AddRangeAsync(IEnumerable<T> entities);
 
         Task Update(T entity);

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GentleRain.RYS.Lib
 {
-    public class Tax : BaseEntity
+    public class Tax : BaseEntity, ITax
     {
         /// <summary>
         /// 社保
@@ -17,5 +17,34 @@ namespace GentleRain.RYS.Lib
         /// </summary>
         public Money HousingFund { get; set; } = new Money(new MoneyOption());
 
+        public TaxModel Create(TaxCreateModel tax)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(string code)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TaxModel GetFromCode(string code)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TaxModel GetFromName(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<TaxModel> Gets()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(TaxUpdateModel tax)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -18,6 +18,12 @@ namespace GentleRain.RYS.Lib
         public IPosition Position { get; set; }
         public ITax Tax { get; set; }
         public IUserRepository UserRepository { get; set; }
+        public User(IUserRepository repository)
+        {
+            Position = new Position();
+            Tax = new Tax();
+            UserRepository = repository;
+        }
         public User(IPosition position, ITax tax, IUserRepository userRepository)
         {
             Position = position;
@@ -40,7 +46,10 @@ namespace GentleRain.RYS.Lib
             }
             _position = Position.GetFromCode(user.PositionCode);
             ExistsByName(user.Name);
-            UserRepository.AddAsync(this);
+            var uuser = UserRepository.AddAsync(this).Result;
+            this.Code = uuser.Code;
+
+            return new UserModel();
         }
 
         public void Update(UserUpdateModel user)
