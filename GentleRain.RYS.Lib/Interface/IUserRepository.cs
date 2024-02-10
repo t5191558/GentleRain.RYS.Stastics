@@ -10,6 +10,7 @@ namespace GentleRain.RYS.Lib.Interface
     public interface IUserRepository : IRepository<User> 
     {
         Task<User> GetByNameAsync(string name);
+        Task<List<User>> GetByPosition(string code);
         Task<IEnumerable<User>> WhereAsync(Expression<Func<User, bool>> predicate);
     }
 }

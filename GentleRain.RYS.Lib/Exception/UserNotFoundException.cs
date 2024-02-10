@@ -8,7 +8,7 @@ namespace GentleRain.RYS.Lib
 {
     public class UserNotFoundException : Exception
     {
-        public UserNotFoundException(string code) : base(string.Format(ExceptionMessageText.UserNotFound,code))
+        public UserNotFoundException(string name) : base(string.Format(ExceptionMessageText.UserNotFound,name))
         {
         }
     }
