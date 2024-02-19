@@ -68,6 +68,10 @@ namespace GentleRain.RYS.Lib
         /// <returns></returns>
         List<UserModel> Gets();
 
+        TaxModel GetTax();
+
+        PositionModel GetPosition();
+
 
     }
 }

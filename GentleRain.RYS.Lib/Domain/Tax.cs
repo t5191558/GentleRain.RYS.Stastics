@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AutoMapper;
+using GentleRain.RYS.Lib.Interface;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +10,16 @@ namespace GentleRain.RYS.Lib
 {
     public class Tax : BaseEntity, ITax
     {
+        private ITaxRepository TaxRepository { get; set; }
+        private IMapper mapper { get; set; }
+        
+
+        public Tax(ITaxRepository taxRepository, IMapper mapper)
+        {
+            TaxRepository = taxRepository;
+            this.mapper = mapper;
+        }
+
         /// <summary>
         /// 社保
         /// </summary>
@@ -19,7 +31,9 @@ namespace GentleRain.RYS.Lib
 
         public TaxModel Create(TaxCreateModel tax)
         {
-            throw new NotImplementedException();
+            var tempTax = mapper.Map<Tax>(tax);
+            var taxCreated = TaxRepository.AddAsync(tempTax ?? throw new TaxNotFoundException(tax.Name)).Result;
+            return mapper.Map<TaxModel>(taxCreated) ?? throw new TaxNotFoundException(tax.Name);
         }
 
         public void Delete(string code)

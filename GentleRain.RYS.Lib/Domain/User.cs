@@ -14,19 +14,13 @@ namespace GentleRain.RYS.Lib
         public string Name { get; set; } = string.Empty;
         public int IsDelete { get; set; }
         public int IsEnable { get; set; }
-        public TaxModel _tax = new TaxModel();
-        public PositionModel _position = new PositionModel();
-        public IPosition Position { get; set; }
-        public ITax Tax { get; set; }
-        public IUserRepository UserRepository { get; set; }
-        public IMapper Mapper { get; set; }
-        public User(IUserRepository repository,IMapper mapper)
-        {
-            Position = new Position();
-            Tax = new Tax();
-            UserRepository = repository;
-            Mapper = mapper;
-        }
+        private TaxModel _tax = new TaxModel();
+        private PositionModel _position = new PositionModel();
+        private IPosition Position { get; set; }
+        private ITax Tax { get; set; }
+        private IUserRepository UserRepository { get; set; }
+        private IMapper Mapper { get; set; }
+        
         public User(IPosition position, ITax tax, IUserRepository userRepository, IMapper mapper)
         {
             Position = position;
@@ -90,7 +84,18 @@ namespace GentleRain.RYS.Lib
 
         public List<UserModel> Gets()
         {
-            throw new NotImplementedException();
+            var users = UserRepository.GetAllAsync().Result;
+            return Mapper.Map<List<UserModel>>(users) ?? new List<UserModel>();
+        }
+
+        public TaxModel GetTax()
+        {
+            return _tax;
+        }
+
+        public PositionModel GetPosition()
+        {
+            return _position;
         }
     }
 }

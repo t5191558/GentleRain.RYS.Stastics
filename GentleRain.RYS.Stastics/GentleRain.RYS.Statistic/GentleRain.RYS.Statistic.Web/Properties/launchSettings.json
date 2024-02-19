@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "GentleRain.RYS.Statistic.Web": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:40502;http://localhost:40503"
+    }
+  }
+}
