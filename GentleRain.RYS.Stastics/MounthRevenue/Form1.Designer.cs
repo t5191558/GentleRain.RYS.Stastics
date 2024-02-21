@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             btnProject = new Button();
             btnEmployee = new Button();
             btnBonusRule = new Button();
@@ -83,6 +84,7 @@
             Controls.Add(btnBonusRule);
             Controls.Add(btnEmployee);
             Controls.Add(btnProject);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Form1";
             Text = "统计系统";
             ResumeLayout(false);

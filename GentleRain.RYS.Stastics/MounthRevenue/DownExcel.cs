@@ -83,6 +83,7 @@ namespace MonthRevenue
                             worksheet.Cell(row, i).Value = dics[employee.Name].Values.Sum(s => s.Where(w => w.ProjectName.Equals(columName)).Sum(s => s.Count)) *  (projects.Find(f=> f.Name == columName)?.Performance ?? 0);
                         }
                         row++;
+                        worksheet.Cell(row, 1).Value = "业绩合计";
                     }
                 }
 
