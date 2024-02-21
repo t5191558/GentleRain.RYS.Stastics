@@ -20,6 +20,7 @@ namespace MonthRevenue.Repository
         public DbSet<BonusEntity> Bonus { get; set; } 
         public DbSet<RevenueEntity> Revenue { get; set; }
         public DbSet<RevenueDetailEntity> RevenueDetail { get; set; }
+        public DbSet<RevenueDayEntity> RevenueDay { get; set; }
 
     }
 }

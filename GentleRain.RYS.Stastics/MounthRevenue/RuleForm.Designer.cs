@@ -118,7 +118,7 @@
             btnUpdate.UseVisualStyleBackColor = true;
             btnUpdate.Click += btnUpdate_Click;
             // 
-            // Rule
+            // RuleForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -132,8 +132,8 @@
             Controls.Add(txtLow);
             Controls.Add(label1);
             Controls.Add(dgvRule);
-            Name = "Rule";
-            Text = "Rule";
+            Name = "RuleForm";
+            Text = "规则管理";
             ((System.ComponentModel.ISupportInitialize)dgvRule).EndInit();
             ResumeLayout(false);
             PerformLayout();

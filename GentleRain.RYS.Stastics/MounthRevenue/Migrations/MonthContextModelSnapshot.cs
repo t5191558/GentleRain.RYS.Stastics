@@ -79,6 +79,42 @@ namespace MonthRevenue.Migrations
                     b.ToTable("Project");
                 });
 
+            modelBuilder.Entity("MonthRevenue.Repository.RevenueDayEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("Count")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("EmployeeName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ProjectName")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("RevenueDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("UnitCardinal")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("UnitPerformance")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RevenueDay");
+                });
+
             modelBuilder.Entity("MonthRevenue.Repository.RevenueDetailEntity", b =>
                 {
                     b.Property<int>("Id")

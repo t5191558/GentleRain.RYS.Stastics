@@ -26,5 +26,11 @@ namespace MounthRevenue
             RuleForm ruleForm = new RuleForm();
             ruleForm.Show();
         }
+
+        private void btnRevenue_Click(object sender, EventArgs e)
+        {
+            RevenueForm revenueForm = new RevenueForm();
+            revenueForm.Show();
+        }
     }
 }

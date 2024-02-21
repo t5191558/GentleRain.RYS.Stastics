@@ -72,6 +72,7 @@
             btnRevenue.TabIndex = 3;
             btnRevenue.Text = "提成管理";
             btnRevenue.UseVisualStyleBackColor = true;
+            btnRevenue.Click += btnRevenue_Click;
             // 
             // Form1
             // 
@@ -83,7 +84,7 @@
             Controls.Add(btnEmployee);
             Controls.Add(btnProject);
             Name = "Form1";
-            Text = "Form1";
+            Text = "统计系统";
             ResumeLayout(false);
         }
 
