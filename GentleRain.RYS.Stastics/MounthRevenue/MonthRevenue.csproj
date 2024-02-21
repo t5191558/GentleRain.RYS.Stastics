@@ -26,4 +26,10 @@
     <Folder Include="Database\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Database\monthnew.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
