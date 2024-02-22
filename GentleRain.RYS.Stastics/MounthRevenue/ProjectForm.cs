@@ -40,6 +40,7 @@ namespace MonthRevenue
         private void dgvProject_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
         {
             e.Row.Cells["Name"].Value = "";
+            e.Row.Cells["Category"].Value = "";
             e.Row.Cells["Cardinal"].Value = 0;
             e.Row.Cells["Performance"].Value = 0;
         }
@@ -50,12 +51,13 @@ namespace MonthRevenue
             {
                 return;
             }
-            if (Exists(txtName.Text))
+            if (Exists(txtCategory.Text + txtName.Text))
             {
                 MessageBox.Show("该项目已经存在");
                 return;
             }
             ProjectEntity project = new ProjectEntity();
+            project.Category = txtCategory.Text;
             project.Name = txtName.Text;
             project.Cardinal = decimal.Parse(txtCardinal.Text);
             project.Performance = decimal.Parse(txtPerformance.Text);
@@ -91,7 +93,7 @@ namespace MonthRevenue
 
         private bool Exists(string name)
         {
-            return context.Projects.Any(a => a.Name == name);
+            return context.Projects.Any(a => (a.Name + a.Category).ToLower() == name.ToLower());
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -108,6 +110,7 @@ namespace MonthRevenue
                 return;
             }
             entity.Name = txtName.Text;
+            entity.Category = txtCategory.Text;
             entity.Cardinal = decimal.Parse(txtCardinal.Text);
             entity.Performance = decimal.Parse(txtPerformance.Text);
             context.SaveChanges();
@@ -118,6 +121,7 @@ namespace MonthRevenue
         private void dgvProject_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             updateId = e.RowIndex >= 0 ? int.Parse(dgvProject.Rows[e.RowIndex].Cells["Id"].Value.ToString() ?? "0") : 0;
+            txtCategory.Text = e.RowIndex >= 0 ? dgvProject.Rows[e.RowIndex].Cells["Category"].Value?.ToString() ?? "" : "";  
             txtName.Text = e.RowIndex >= 0 ? dgvProject.Rows[e.RowIndex].Cells["Name"].Value.ToString() : "";
             txtCardinal.Text = e.RowIndex >= 0 ? dgvProject.Rows[e.RowIndex].Cells["Cardinal"].Value.ToString() : "0";
             txtPerformance.Text = e.RowIndex >= 0 ? dgvProject.Rows[e.RowIndex].Cells["Performance"].Value.ToString() : "0";

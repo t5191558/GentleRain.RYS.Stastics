@@ -19,6 +19,11 @@ namespace MonthRevenue.Repository
         public string EmployeeName { get; set; } = string.Empty;
         public int ProjectId { get; set; }
         /// <summary>
+        /// 项目分类 
+        /// </summary>
+        [DisplayName("项目分类")]
+        public string? ProjectCategory { get; set; }
+        /// <summary>
         /// 项目名称
         /// </summary>
         [DisplayName("项目名称")]
@@ -38,5 +43,11 @@ namespace MonthRevenue.Repository
         /// </summary>
         [DisplayName("单个项目提成")]
         public decimal UnitPerformance { get; set; }
+
+
+        public string ProjectKey()
+        {
+            return ProjectCategory ?? "" + ProjectName;
+        }
     }
 }

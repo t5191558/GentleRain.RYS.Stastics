@@ -52,10 +52,10 @@ namespace MonthRevenue
                 dr["姓名"] = data.Value[0].EmployeeName;
                 foreach (var d in data.Value)
                 {
-                    if (dt.Columns.Contains(d.ProjectName))
+                    if (dt.Columns.Contains(d.ProjectKey()))
                     {
                         decimal tempValue = 0;
-                        decimal.TryParse(dr[d.ProjectName].ToString() ?? "0", out tempValue);
+                        decimal.TryParse(dr[d.ProjectKey()].ToString() ?? "0", out tempValue);
                         tempValue += d.Count;
                         dr[d.ProjectName] = tempValue;
                     }
@@ -73,7 +73,7 @@ namespace MonthRevenue
             dt.Columns.Add("姓名");
             foreach (var project in context.Projects)
             {
-                dt.Columns.Add(project.Name);
+                dt.Columns.Add(project.Key());
             }
             return dt;
         }

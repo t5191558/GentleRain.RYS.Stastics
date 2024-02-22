@@ -15,6 +15,11 @@ namespace MonthRevenue.Repository
     public class ProjectEntity
     {
         public int Id { get; set; }
+        /// <summary>
+        /// 项目类别 
+        /// </summary>
+        [DisplayName("项目类别")]
+        public string? Category { get; set; }
         [DisplayName("项目名称")]
         public string Name { get; set; } = string.Empty;
         /// <summary>
@@ -27,6 +32,12 @@ namespace MonthRevenue.Repository
         /// </summary>
         [DisplayName("项目提成(某些项目有)")]
         public decimal Performance{ get; set; }
+
+
+        public string Key()
+        {
+            return Category ?? "" + Name;
+        }
 
     }
 }
