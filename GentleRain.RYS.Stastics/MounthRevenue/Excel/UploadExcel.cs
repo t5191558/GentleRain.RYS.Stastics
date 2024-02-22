@@ -57,10 +57,45 @@ namespace MonthRevenue
             return result;
         }
 
-        private static List<RevenueDayEntity> ReadData(IXLWorksheet worksheet, int row)
+        /// <summary>
+        /// 读取区域数据
+        /// </summary>
+        /// <param name="worksheet">当前sheet表</param>        
+        /// <returns></returns>
+        private static Dictionary<string, List<string>> ReadData(IXLWorksheet worksheet)
         {
-            List<RevenueDayEntity> result = new List<RevenueDayEntity>();
+            Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
+            int lastRow = worksheet.LastRowUsed().RowNumber();
+            for(int row = 0; row < lastRow; row++)
+            {
+                if (IsValidArea(worksheet.Cell(row, 1)))
+                {
+                    int column = 1;
+                    IXLCell cell = worksheet.Cell(row, column);
+                    while (HasColumn(cell))
+                    {
+                        string key = GetColumn(cell);
+                        cell = worksheet.Cell(row, ++column);
+                    }
+                }
+            }
             return result;
         }
+
+        private static bool IsValidArea(IXLCell cell)
+        {
+            return cell.GetString().Equals("姓名", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool HasColumn(IXLCell cell)
+        {
+            return !string.IsNullOrEmpty(GetColumn(cell));
+        }
+
+        private static string GetColumn(IXLCell cell)
+        {
+            return cell.GetString();
+        }
+
     }
 }
