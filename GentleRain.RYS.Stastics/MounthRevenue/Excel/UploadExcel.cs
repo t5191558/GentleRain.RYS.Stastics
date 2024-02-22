@@ -21,8 +21,7 @@ namespace MonthRevenue
                 // 获取工作簿中的第一个工作表
                 IXLWorksheet worksheet = workbook.Worksheet(1);
 
-                // 遍历工作表中的所有行和列
-                // 假设第一行是标题行，并且你想从第二行开始处理
+                //在第一列读取到"姓名"字符串时,该行为列头
                 IXLRow columnRow = worksheet.Row(1);
                 IXLRow columnRow2 = worksheet.Row(2);
                 int lastRow = worksheet.LastRowUsed().RowNumber();
@@ -58,5 +57,10 @@ namespace MonthRevenue
             return result;
         }
 
+        private static List<RevenueDayEntity> ReadData(IXLWorksheet worksheet, int row)
+        {
+            List<RevenueDayEntity> result = new List<RevenueDayEntity>();
+            return result;
+        }
     }
 }
