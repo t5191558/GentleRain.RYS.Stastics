@@ -36,7 +36,7 @@ namespace MonthRevenue.Repository
 
         public string Key()
         {
-            return Category ?? "" + Name;
+            return (Category ?? "") + Name;
         }
 
     }

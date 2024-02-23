@@ -47,7 +47,7 @@ namespace MonthRevenue.Repository
 
         public string ProjectKey()
         {
-            return ProjectCategory ?? "" + ProjectName;
+            return (ProjectCategory ?? "") + ProjectName;
         }
     }
 }

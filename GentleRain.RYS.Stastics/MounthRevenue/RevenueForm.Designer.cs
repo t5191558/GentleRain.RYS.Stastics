@@ -37,6 +37,7 @@
             btnSearch = new Button();
             btnFileUpload = new Button();
             btnMassage = new Button();
+            btnDel = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvRevenue).BeginInit();
             SuspendLayout();
             // 
@@ -111,11 +112,22 @@
             btnMassage.UseVisualStyleBackColor = true;
             btnMassage.Click += btnMassage_Click;
             // 
+            // btnDel
+            // 
+            btnDel.Location = new Point(1093, 23);
+            btnDel.Name = "btnDel";
+            btnDel.Size = new Size(94, 29);
+            btnDel.TabIndex = 8;
+            btnDel.Text = "删除数据";
+            btnDel.UseVisualStyleBackColor = true;
+            btnDel.Click += btnDel_Click;
+            // 
             // RevenueForm
             // 
             AutoScaleDimensions = new SizeF(9F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1350, 580);
+            Controls.Add(btnDel);
             Controls.Add(btnMassage);
             Controls.Add(btnFileUpload);
             Controls.Add(btnSearch);
@@ -142,5 +154,6 @@
         private Button btnSearch;
         private Button btnFileUpload;
         private Button btnMassage;
+        private Button btnDel;
     }
 }

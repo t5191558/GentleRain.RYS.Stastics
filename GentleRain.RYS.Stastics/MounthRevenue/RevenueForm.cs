@@ -57,7 +57,7 @@ namespace MonthRevenue
                         decimal tempValue = 0;
                         decimal.TryParse(dr[d.ProjectKey()].ToString() ?? "0", out tempValue);
                         tempValue += d.Count;
-                        dr[d.ProjectName] = tempValue;
+                        dr[d.ProjectKey()] = tempValue;
                     }
                 }
                 dt.Rows.Add(dr);
@@ -108,6 +108,7 @@ namespace MonthRevenue
                 var datas = UploadExcel.Upload(fileName);
                 context.RevenueDay.AddRange(datas);
                 context.SaveChanges();
+                MessageBox.Show("数据导入成功", "导入成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 InitData();
             }
         }
@@ -121,7 +122,7 @@ namespace MonthRevenue
                 saveFileDialog.CheckPathExists = true; // 检查路径是否存在
                 saveFileDialog.DefaultExt = "xlsx"; // 默认扩展名
                 saveFileDialog.AddExtension = true; // 自动添加扩展名
-                saveFileDialog.FileName =$"{date1.Value:yyyyMMdd}-{date2.Value:yyyyMMdd}推拿统计"; 
+                saveFileDialog.FileName = $"{date1.Value:yyyyMMdd}-{date2.Value:yyyyMMdd}推拿统计";
                 saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments); // 默认目录
 
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
@@ -133,6 +134,17 @@ namespace MonthRevenue
                     DownExcel.DownMassageExcel(date1.Value, date2.Value, filePath);
                     MessageBox.Show($"excel导出到 {filePath}", "导出成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
+            }
+        }
+
+        private void btnDel_Click(object sender, EventArgs e)
+        {                        
+            var result = MessageBox.Show("是否确定删除", "确定", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+            if(result == DialogResult.OK)
+            {
+                context.RevenueDay.RemoveRange(context.RevenueDay.Where(w => w.RevenueDate >= date1.Value && w.RevenueDate <= date2.Value));
+                context.SaveChanges();
+                InitData();
             }
         }
     }
