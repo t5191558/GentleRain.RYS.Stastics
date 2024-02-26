@@ -37,9 +37,9 @@
             // 
             // btnProject
             // 
-            btnProject.Location = new Point(62, 67);
+            btnProject.Location = new Point(70, 67);
             btnProject.Name = "btnProject";
-            btnProject.Size = new Size(170, 74);
+            btnProject.Size = new Size(191, 74);
             btnProject.TabIndex = 0;
             btnProject.Text = "项目管理";
             btnProject.UseVisualStyleBackColor = true;
@@ -47,9 +47,9 @@
             // 
             // btnEmployee
             // 
-            btnEmployee.Location = new Point(365, 67);
+            btnEmployee.Location = new Point(411, 67);
             btnEmployee.Name = "btnEmployee";
-            btnEmployee.Size = new Size(170, 74);
+            btnEmployee.Size = new Size(191, 74);
             btnEmployee.TabIndex = 1;
             btnEmployee.Text = "员工管理";
             btnEmployee.UseVisualStyleBackColor = true;
@@ -57,9 +57,9 @@
             // 
             // btnBonusRule
             // 
-            btnBonusRule.Location = new Point(62, 225);
+            btnBonusRule.Location = new Point(70, 225);
             btnBonusRule.Name = "btnBonusRule";
-            btnBonusRule.Size = new Size(170, 74);
+            btnBonusRule.Size = new Size(191, 74);
             btnBonusRule.TabIndex = 2;
             btnBonusRule.Text = "提成规则管理";
             btnBonusRule.UseVisualStyleBackColor = true;
@@ -67,9 +67,9 @@
             // 
             // btnRevenue
             // 
-            btnRevenue.Location = new Point(365, 225);
+            btnRevenue.Location = new Point(411, 225);
             btnRevenue.Name = "btnRevenue";
-            btnRevenue.Size = new Size(170, 74);
+            btnRevenue.Size = new Size(191, 74);
             btnRevenue.TabIndex = 3;
             btnRevenue.Text = "提成管理";
             btnRevenue.UseVisualStyleBackColor = true;
@@ -77,15 +77,16 @@
             // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(9F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(711, 450);
+            ClientSize = new Size(800, 450);
             Controls.Add(btnRevenue);
             Controls.Add(btnBonusRule);
             Controls.Add(btnEmployee);
             Controls.Add(btnProject);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Form1";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "统计系统";
             ResumeLayout(false);
         }

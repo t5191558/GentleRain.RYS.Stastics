@@ -135,6 +135,7 @@
             Controls.Add(dgvRule);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "RuleForm";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "规则管理";
             ((System.ComponentModel.ISupportInitialize)dgvRule).EndInit();
             ResumeLayout(false);

@@ -115,6 +115,27 @@ namespace MonthRevenue
 
         private void btnMassage_Click(object sender, EventArgs e)
         {
+            SaveFile($"{date1.Value:yyyyMMdd}-{date2.Value:yyyyMMdd}人员项目业绩", DownExcel.DownMassageExcel);
+        }
+
+        private void btnDel_Click(object sender, EventArgs e)
+        {
+            var result = MessageBox.Show("是否确定删除", "确定", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+            if (result == DialogResult.OK)
+            {
+                context.RevenueDay.RemoveRange(context.RevenueDay.Where(w => w.RevenueDate >= date1.Value && w.RevenueDate <= date2.Value));
+                context.SaveChanges();
+                InitData();
+            }
+        }
+
+        private void btnDayRevenue_Click(object sender, EventArgs e)
+        {
+            SaveFile($"{date1.Value:yyyyMMdd}-{date2.Value:yyyyMMdd}日期项目业绩", DownExcel.DownDayExcel);
+        }
+
+        private void SaveFile(string filename,Action<DateTime,DateTime,string> Do)
+        {
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
                 saveFileDialog.Filter = "Excel files (*.xlsx)|*.xlsx"; // 只显示 Excel 文件
@@ -122,7 +143,7 @@ namespace MonthRevenue
                 saveFileDialog.CheckPathExists = true; // 检查路径是否存在
                 saveFileDialog.DefaultExt = "xlsx"; // 默认扩展名
                 saveFileDialog.AddExtension = true; // 自动添加扩展名
-                saveFileDialog.FileName = $"{date1.Value:yyyyMMdd}-{date2.Value:yyyyMMdd}推拿统计";
+                saveFileDialog.FileName = filename;
                 saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments); // 默认目录
 
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
@@ -130,21 +151,10 @@ namespace MonthRevenue
                     // 用户选择了有效的文件路径并点击了"保存"
                     string filePath = saveFileDialog.FileName;
 
-                    // 保存工作簿到用户指定的路径
-                    DownExcel.DownMassageExcel(date1.Value, date2.Value, filePath);
+                    // 保存工作簿到用户指定的路径                    
+                    Do(date1.Value, date2.Value, filePath);                    
                     MessageBox.Show($"excel导出到 {filePath}", "导出成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-            }
-        }
-
-        private void btnDel_Click(object sender, EventArgs e)
-        {                        
-            var result = MessageBox.Show("是否确定删除", "确定", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-            if(result == DialogResult.OK)
-            {
-                context.RevenueDay.RemoveRange(context.RevenueDay.Where(w => w.RevenueDate >= date1.Value && w.RevenueDate <= date2.Value));
-                context.SaveChanges();
-                InitData();
             }
         }
     }

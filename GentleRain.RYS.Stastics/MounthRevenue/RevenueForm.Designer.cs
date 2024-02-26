@@ -38,6 +38,7 @@
             btnFileUpload = new Button();
             btnMassage = new Button();
             btnDel = new Button();
+            btnDayRevenue = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvRevenue).BeginInit();
             SuspendLayout();
             // 
@@ -47,7 +48,7 @@
             dgvRevenue.Location = new Point(14, 92);
             dgvRevenue.Name = "dgvRevenue";
             dgvRevenue.RowHeadersWidth = 51;
-            dgvRevenue.Size = new Size(1323, 432);
+            dgvRevenue.Size = new Size(1626, 432);
             dgvRevenue.TabIndex = 0;
             // 
             // label1
@@ -94,7 +95,7 @@
             // 
             // btnFileUpload
             // 
-            btnFileUpload.Location = new Point(816, 21);
+            btnFileUpload.Location = new Point(754, 20);
             btnFileUpload.Name = "btnFileUpload";
             btnFileUpload.Size = new Size(106, 29);
             btnFileUpload.TabIndex = 6;
@@ -104,17 +105,17 @@
             // 
             // btnMassage
             // 
-            btnMassage.Location = new Point(956, 23);
+            btnMassage.Location = new Point(926, 20);
             btnMassage.Name = "btnMassage";
-            btnMassage.Size = new Size(106, 29);
+            btnMassage.Size = new Size(159, 29);
             btnMassage.TabIndex = 7;
-            btnMassage.Text = "导出推拿统计";
+            btnMassage.Text = "导出人员项目业绩";
             btnMassage.UseVisualStyleBackColor = true;
             btnMassage.Click += btnMassage_Click;
             // 
             // btnDel
             // 
-            btnDel.Location = new Point(1093, 23);
+            btnDel.Location = new Point(183, 57);
             btnDel.Name = "btnDel";
             btnDel.Size = new Size(94, 29);
             btnDel.TabIndex = 8;
@@ -122,11 +123,22 @@
             btnDel.UseVisualStyleBackColor = true;
             btnDel.Click += btnDel_Click;
             // 
+            // btnDayRevenue
+            // 
+            btnDayRevenue.Location = new Point(1169, 21);
+            btnDayRevenue.Name = "btnDayRevenue";
+            btnDayRevenue.Size = new Size(168, 29);
+            btnDayRevenue.TabIndex = 9;
+            btnDayRevenue.Text = "导出日期项目业绩";
+            btnDayRevenue.UseVisualStyleBackColor = true;
+            btnDayRevenue.Click += btnDayRevenue_Click;
+            // 
             // RevenueForm
             // 
             AutoScaleDimensions = new SizeF(9F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1350, 580);
+            ClientSize = new Size(1675, 580);
+            Controls.Add(btnDayRevenue);
             Controls.Add(btnDel);
             Controls.Add(btnMassage);
             Controls.Add(btnFileUpload);
@@ -138,6 +150,7 @@
             Controls.Add(dgvRevenue);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "RevenueForm";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "业绩管理";
             ((System.ComponentModel.ISupportInitialize)dgvRevenue).EndInit();
             ResumeLayout(false);
@@ -155,5 +168,6 @@
         private Button btnFileUpload;
         private Button btnMassage;
         private Button btnDel;
+        private Button btnDayRevenue;
     }
 }

@@ -135,6 +135,7 @@
             Controls.Add(dgvEmployee);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "EmployeeForm";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "员工管理";
             ((System.ComponentModel.ISupportInitialize)dgvEmployee).EndInit();
             ResumeLayout(false);
