@@ -12,6 +12,7 @@ namespace MonthRevenue
 {
     public static class DownExcel
     {
+        //推拿统计
         public static void DownMassageExcel(DateTime start, DateTime end, string filepath)
         {
             MonthContext context = new MonthContext();
@@ -136,7 +137,16 @@ namespace MonthRevenue
             }
         }
 
-        
+        //推拿提成 
+        public static void DownRevenueExcel(DateTime start, DateTime end, string filepath)
+        {
+            MonthContext context = new MonthContext();
+            var datas = context.RevenueDay.Where(w => w.RevenueDate >= start && w.RevenueDate <= end);
+            var projects = context.Projects.ToList();
+            var employees = context.Employees.ToList();
+            var rule = context.Bonus.ToList();
+            Dictionary<string, Dictionary<string, decimal>> dics = new Dictionary<string, Dictionary<string, decimal>>();
+        }
 
         private static string GetColumnCategory(IXLWorksheet worksheet,int columnIndex)
         {
