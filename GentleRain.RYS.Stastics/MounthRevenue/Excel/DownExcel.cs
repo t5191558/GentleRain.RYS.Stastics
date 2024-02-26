@@ -1,4 +1,6 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.InkML;
+using DocumentFormat.OpenXml.Spreadsheet;
 using MonthRevenue.Repository;
 using System;
 using System.Collections.Generic;
@@ -43,22 +45,34 @@ namespace MonthRevenue
                 {
                     var worksheet = workbook.Worksheets.Add(employee.Name);
                     //第一行条件标题
+                    worksheet.Range(1, 1, 2, 1).Merge();
                     worksheet.Cell(1, 1).Value = "日期";
                     int column = 2;
                     foreach (var project in projects)
                     {
-                        worksheet.Cell(1, column++).Value = project.Name;
+                        if(string.IsNullOrWhiteSpace(project.Category))
+                        {
+                            worksheet.Range(1, column, 2, column).Merge();
+                            worksheet.Cell(1, column++).Value = project.Name;
+                        }
+                        else
+                        {
+                            worksheet.Cell(1, column).Value = project.Category;
+                            worksheet.Cell(2, column++).Value = project.Name;
+                        }
                     }
+                    
                     if (dics.ContainsKey(employee.Name))
                     {
-                        int row = 2;
+                        int row = 3;
                         foreach (var data in dics[employee.Name])
                         {
                             worksheet.Cell(row, 1).Value = data.Key;
                             for (int i = 2; i < projects.Count + 2; i++)
                             {
-                                var columName = worksheet.Cell(1, i).GetString();
-                                worksheet.Cell(row, i).Value = data.Value.Where(w => w.ProjectName.Equals(columName)).Sum(s => s.Count);
+                                var columCategory = GetColumnCategory(worksheet, i);
+                                var columName = GetColumnName(worksheet, i);
+                                worksheet.Cell(row, i).Value = data.Value.Where(w => w.ProjectName.Equals(columName,StringComparison.OrdinalIgnoreCase) &&  (w.ProjectCategory ?? "").Equals(columCategory,StringComparison.OrdinalIgnoreCase)).Sum(s => s.Count);
                             }
                             row++;
                         }
@@ -66,22 +80,25 @@ namespace MonthRevenue
                         worksheet.Cell(row, 1).Value = "小计";
                         for (int i = 2; i < projects.Count + 2; i++)
                         {
-                            var columName = worksheet.Cell(1, i).GetString();
-                            worksheet.Cell(row, i).Value = dics[employee.Name].Values.Sum(s => s.Where(w => w.ProjectName.Equals(columName)).Sum(s => s.Count));
+                            var columCategory = GetColumnCategory(worksheet, i);
+                            var columName = GetColumnName(worksheet, i); 
+                            worksheet.Cell(row, i).Value = dics[employee.Name].Values.Sum(s => s.Where(w => w.ProjectName.Equals(columName,StringComparison.OrdinalIgnoreCase) && (w.ProjectCategory ?? "").Equals(columCategory,StringComparison.OrdinalIgnoreCase)).Sum(s => s.Count));
                         }
                         row++;
                         worksheet.Cell(row, 1).Value = "业绩";
                         for (int i = 2; i < projects.Count + 2; i++)
                         {
+                            var columCategory = GetColumnCategory(worksheet, i);
                             var columName = worksheet.Cell(1, i).GetString();
-                            worksheet.Cell(row, i).Value = dics[employee.Name].Values.Sum(s => s.Where(w => w.ProjectName.Equals(columName)).Sum(s => s.Count * s.UnitCardinal));
+                            worksheet.Cell(row, i).Value = dics[employee.Name].Values.Sum(s => s.Where(w => w.ProjectName.Equals(columName, StringComparison.OrdinalIgnoreCase) && (w.ProjectCategory ?? "").Equals(columCategory, StringComparison.OrdinalIgnoreCase)).Sum(s => s.Count * s.UnitCardinal));
                         }
                         row++;
                         worksheet.Cell(row, 1).Value = "提成";
                         for (int i = 2; i < projects.Count + 2; i++)
                         {
+                            var columCategory = GetColumnCategory(worksheet, i);
                             var columName = worksheet.Cell(1, i).GetString();
-                            worksheet.Cell(row, i).Value = dics[employee.Name].Values.Sum(s => s.Where(w => w.ProjectName.Equals(columName)).Sum(s => s.Count * s.UnitPerformance));
+                            worksheet.Cell(row, i).Value = dics[employee.Name].Values.Sum(s => s.Where(w => w.ProjectName.Equals(columName, StringComparison.OrdinalIgnoreCase) && (w.ProjectCategory ?? "").Equals(columCategory, StringComparison.OrdinalIgnoreCase)).Sum(s => s.Count * s.UnitPerformance));
                         }
                         row++;
                         worksheet.Cell(row, 1).Value = "业绩合计";
@@ -90,6 +107,7 @@ namespace MonthRevenue
                         decimal vipCardinal = dics[employee.Name].Values.Sum(s => s.Sum(RevenueFormula.CardinalWithOutPerformance));
                         worksheet.Cell(row, 3).Value = "核算提成业绩(减掉168)";
                         decimal actualCardinal = vipCardinal - RevenueFormula.CardinalFixSbu();
+                        actualCardinal = actualCardinal < 0 ? 0 : actualCardinal;
                         worksheet.Cell(row, 4).Value = "业绩提成";
                         decimal cardinalperformance = actualCardinal * rule.Where(w => w.Low <= totalCardinal && w.High > totalCardinal).First().Rate;
                         worksheet.Cell(row, 5).Value = "团购提成";
@@ -106,11 +124,85 @@ namespace MonthRevenue
                         worksheet.Cell(row, 5).Value = vipPerformance;
                         worksheet.Cell(row, 6).Value = totalPerformance;
                         worksheet.Cell(row, 7).Value = ratePerformance;
+
+                        MergeColumnHead(worksheet, column);
+                        AdjustToContents(worksheet, column);
+                        Center(worksheet, column);
                     }
                 }
 
                 // 保存工作簿
                 workbook.SaveAs(filepath);
+            }
+        }
+
+        
+
+        private static string GetColumnCategory(IXLWorksheet worksheet,int columnIndex)
+        {
+            var category = worksheet.Cell(1, columnIndex).GetString();
+            var columName = worksheet.Cell(2, columnIndex).GetString();
+            if(string.IsNullOrEmpty(columName))
+            {
+                return "";
+            }
+
+            if (category.Equals(columName, StringComparison.OrdinalIgnoreCase))
+            {
+                return "";
+            }
+
+            return category;
+        }
+
+        private static string GetColumnName(IXLWorksheet worksheet,int columnIndex )
+        {
+            var category = worksheet.Cell(1, columnIndex).GetString();
+            var columName = worksheet.Cell(2, columnIndex).GetString();
+            if (string.IsNullOrWhiteSpace(columName))
+            {
+                return category;
+            }
+            return columName;
+        }
+
+        private static void MergeColumnHead(IXLWorksheet worksheet,int column)
+        {
+            string sameHeadName = "";
+            int sameCount = 0;
+            for (int cIndex = 2; cIndex < column; cIndex++)
+            {
+                var headName = worksheet.Cell(1, cIndex).GetString();
+                if (headName.Equals(sameHeadName, StringComparison.OrdinalIgnoreCase))
+                {
+                    sameCount++;
+                }
+                else
+                {
+                    if(sameCount > 0)
+                    {
+                        worksheet.Range(1,cIndex - 1 - sameCount,1,cIndex - 1).Merge();
+                        worksheet.Cell(1, cIndex - 1 - sameCount).Value = sameHeadName;
+                    }
+                    sameHeadName = headName;
+                    sameCount = 0;
+                }
+            }
+        }
+
+        private static void AdjustToContents(IXLWorksheet worksheet,int column)
+        {
+            //worksheet.Columns().AdjustToContents();
+        }
+
+        private static void Center(IXLWorksheet worksheet,int column)
+        {
+            for (int cIndex = 1; cIndex < column; cIndex++)
+            {
+                var cell = worksheet.Cell(1,cIndex);
+                // 设置单元格的对齐方式为居中
+                cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             }
         }
     }
