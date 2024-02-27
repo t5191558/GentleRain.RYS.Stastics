@@ -161,8 +161,8 @@ namespace MonthRevenue
                         var columCategory = GetColumnCategory(worksheet, i);
                         var columName = GetColumnName(worksheet, i);
                         var counts = data.Where(w => w.ProjectName.Equals(columName, StringComparison.OrdinalIgnoreCase) && (w.ProjectCategory ?? "").Equals(columCategory, StringComparison.OrdinalIgnoreCase)).Sum(s=> s.Count);
-                        var revenue = data.Where(w => w.ProjectName.Equals(columName, StringComparison.OrdinalIgnoreCase) && (w.ProjectCategory ?? "").Equals(columCategory, StringComparison.OrdinalIgnoreCase)).Sum(s => s.UnitCardinal);
-                        var vip = data.Where(w => w.ProjectName.Equals(columName, StringComparison.OrdinalIgnoreCase) && (w.ProjectCategory ?? "").Equals(columCategory, StringComparison.OrdinalIgnoreCase)).Sum(s => s.UnitPerformance);
+                        var revenue = data.Where(w => w.ProjectName.Equals(columName, StringComparison.OrdinalIgnoreCase) && (w.ProjectCategory ?? "").Equals(columCategory, StringComparison.OrdinalIgnoreCase)).Sum(s => s.Count * s.UnitCardinal);
+                        var vip = data.Where(w => w.ProjectName.Equals(columName, StringComparison.OrdinalIgnoreCase) && (w.ProjectCategory ?? "").Equals(columCategory, StringComparison.OrdinalIgnoreCase)).Sum(s => s.Count * s.UnitPerformance);
                         worksheet.Cell(row,i).Value = counts;
                         worksheet.Cell(row, i + 1).Value = vip <= 0 ? revenue : vip;
                     }                    
@@ -272,7 +272,7 @@ namespace MonthRevenue
                     worksheet.Cell(row, fcolumn++).Value = housFund;
                     worksheet.Cell(row, fcolumn++).Value = waterElectricity;
                     worksheet.Cell(row, fcolumn++).Value = totalPerformance - socialAmount - housFund - waterElectricity;
-                    row += 3;
+                    row += 4;
                 }
 
                 // 保存工作簿
