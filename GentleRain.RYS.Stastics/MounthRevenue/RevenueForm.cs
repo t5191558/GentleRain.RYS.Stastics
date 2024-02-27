@@ -98,7 +98,7 @@ namespace MonthRevenue
             openFileDialog.InitialDirectory = @"C:\";
 
             // 允许对话框选择多个文件（可选）
-            openFileDialog.Multiselect = false;
+            openFileDialog.Multiselect = true;
 
             // 如果用户点击了对话框的“打开”按钮
             if (openFileDialog.ShowDialog() == DialogResult.OK)
