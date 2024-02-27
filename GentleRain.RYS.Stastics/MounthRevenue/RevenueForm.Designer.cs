@@ -39,22 +39,23 @@
             btnMassage = new Button();
             btnDel = new Button();
             btnDayRevenue = new Button();
+            btnExportRevenue = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvRevenue).BeginInit();
             SuspendLayout();
             // 
             // dgvRevenue
             // 
             dgvRevenue.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvRevenue.Location = new Point(14, 92);
+            dgvRevenue.Location = new Point(12, 92);
             dgvRevenue.Name = "dgvRevenue";
             dgvRevenue.RowHeadersWidth = 51;
-            dgvRevenue.Size = new Size(1626, 432);
+            dgvRevenue.Size = new Size(1445, 432);
             dgvRevenue.TabIndex = 0;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(18, 19);
+            label1.Location = new Point(16, 19);
             label1.Name = "label1";
             label1.Size = new Size(39, 20);
             label1.TabIndex = 1;
@@ -62,15 +63,15 @@
             // 
             // date1
             // 
-            date1.Location = new Point(89, 20);
+            date1.Location = new Point(79, 20);
             date1.Name = "date1";
-            date1.Size = new Size(281, 27);
+            date1.Size = new Size(250, 27);
             date1.TabIndex = 2;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(394, 23);
+            label2.Location = new Point(350, 23);
             label2.Name = "label2";
             label2.Size = new Size(27, 20);
             label2.TabIndex = 3;
@@ -78,16 +79,16 @@
             // 
             // date2
             // 
-            date2.Location = new Point(453, 21);
+            date2.Location = new Point(403, 21);
             date2.Name = "date2";
-            date2.Size = new Size(281, 27);
+            date2.Size = new Size(250, 27);
             date2.TabIndex = 4;
             // 
             // btnSearch
             // 
-            btnSearch.Location = new Point(18, 57);
+            btnSearch.Location = new Point(16, 57);
             btnSearch.Name = "btnSearch";
-            btnSearch.Size = new Size(106, 29);
+            btnSearch.Size = new Size(94, 29);
             btnSearch.TabIndex = 5;
             btnSearch.Text = "查询";
             btnSearch.UseVisualStyleBackColor = true;
@@ -95,9 +96,9 @@
             // 
             // btnFileUpload
             // 
-            btnFileUpload.Location = new Point(754, 20);
+            btnFileUpload.Location = new Point(670, 20);
             btnFileUpload.Name = "btnFileUpload";
-            btnFileUpload.Size = new Size(106, 29);
+            btnFileUpload.Size = new Size(94, 29);
             btnFileUpload.TabIndex = 6;
             btnFileUpload.Text = "导入Excel文件";
             btnFileUpload.UseVisualStyleBackColor = true;
@@ -105,9 +106,9 @@
             // 
             // btnMassage
             // 
-            btnMassage.Location = new Point(926, 20);
+            btnMassage.Location = new Point(823, 20);
             btnMassage.Name = "btnMassage";
-            btnMassage.Size = new Size(159, 29);
+            btnMassage.Size = new Size(141, 29);
             btnMassage.TabIndex = 7;
             btnMassage.Text = "导出人员项目业绩";
             btnMassage.UseVisualStyleBackColor = true;
@@ -115,9 +116,9 @@
             // 
             // btnDel
             // 
-            btnDel.Location = new Point(183, 57);
+            btnDel.Location = new Point(163, 57);
             btnDel.Name = "btnDel";
-            btnDel.Size = new Size(94, 29);
+            btnDel.Size = new Size(84, 29);
             btnDel.TabIndex = 8;
             btnDel.Text = "删除数据";
             btnDel.UseVisualStyleBackColor = true;
@@ -125,19 +126,30 @@
             // 
             // btnDayRevenue
             // 
-            btnDayRevenue.Location = new Point(1169, 21);
+            btnDayRevenue.Location = new Point(1010, 21);
             btnDayRevenue.Name = "btnDayRevenue";
-            btnDayRevenue.Size = new Size(168, 29);
+            btnDayRevenue.Size = new Size(149, 29);
             btnDayRevenue.TabIndex = 9;
             btnDayRevenue.Text = "导出日期项目业绩";
             btnDayRevenue.UseVisualStyleBackColor = true;
             btnDayRevenue.Click += btnDayRevenue_Click;
             // 
+            // btnExportRevenue
+            // 
+            btnExportRevenue.Location = new Point(1194, 21);
+            btnExportRevenue.Name = "btnExportRevenue";
+            btnExportRevenue.Size = new Size(185, 29);
+            btnExportRevenue.TabIndex = 10;
+            btnExportRevenue.Text = "导出业绩提成";
+            btnExportRevenue.UseVisualStyleBackColor = true;
+            btnExportRevenue.Click += btnExportRevenue_Click;
+            // 
             // RevenueForm
             // 
-            AutoScaleDimensions = new SizeF(9F, 20F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1675, 580);
+            ClientSize = new Size(1489, 580);
+            Controls.Add(btnExportRevenue);
             Controls.Add(btnDayRevenue);
             Controls.Add(btnDel);
             Controls.Add(btnMassage);
@@ -169,5 +181,6 @@
         private Button btnMassage;
         private Button btnDel;
         private Button btnDayRevenue;
+        private Button btnExportRevenue;
     }
 }

@@ -134,7 +134,7 @@ namespace MonthRevenue
             SaveFile($"{date1.Value:yyyyMMdd}-{date2.Value:yyyyMMdd}日期项目业绩", DownExcel.DownDayExcel);
         }
 
-        private void SaveFile(string filename,Action<DateTime,DateTime,string> Do)
+        private void SaveFile(string filename, Action<DateTime, DateTime, string> Do)
         {
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
@@ -152,10 +152,15 @@ namespace MonthRevenue
                     string filePath = saveFileDialog.FileName;
 
                     // 保存工作簿到用户指定的路径                    
-                    Do(date1.Value, date2.Value, filePath);                    
+                    Do(date1.Value, date2.Value, filePath);
                     MessageBox.Show($"excel导出到 {filePath}", "导出成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
+        }
+
+        private void btnExportRevenue_Click(object sender, EventArgs e)
+        {
+            SaveFile($"{date1.Value:yyyyMMdd}-{date2.Value:yyyyMMdd}业绩提成", DownExcel.DownRevenueExcel);
         }
     }
 }
