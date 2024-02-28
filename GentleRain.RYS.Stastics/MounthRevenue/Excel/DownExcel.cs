@@ -164,7 +164,7 @@ namespace MonthRevenue
                         var revenue = data.Where(w => w.ProjectName.Equals(columName, StringComparison.OrdinalIgnoreCase) && (w.ProjectCategory ?? "").Equals(columCategory, StringComparison.OrdinalIgnoreCase)).Sum(s => s.Count * s.UnitCardinal);
                         var vip = data.Where(w => w.ProjectName.Equals(columName, StringComparison.OrdinalIgnoreCase) && (w.ProjectCategory ?? "").Equals(columCategory, StringComparison.OrdinalIgnoreCase)).Sum(s => s.Count * s.UnitPerformance);
                         worksheet.Cell(row,i).Value = counts;
-                        worksheet.Cell(row, i + 1).Value = vip <= 0 ? revenue : vip;
+                        worksheet.Cell(row, i + 1).Value = 0;// vip <= 0 ? revenue : vip;
                     }
                     row++;
                 }
