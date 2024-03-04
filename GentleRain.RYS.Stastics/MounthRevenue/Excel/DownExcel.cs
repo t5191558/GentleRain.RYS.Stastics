@@ -73,7 +73,7 @@ namespace MonthRevenue
                         for (int i = 2; i < projects.Count + 2; i++)
                         {
                             var columCategory = GetColumnCategory(worksheet, i);
-                            var columName = worksheet.Cell(1, i).GetString();
+                            var columName = GetColumnName(worksheet,i);
                             worksheet.Cell(row, i).Value = dics[employee.Name].Values.Sum(s => s.Where(w => w.ProjectName.Equals(columName, StringComparison.OrdinalIgnoreCase) && (w.ProjectCategory ?? "").Equals(columCategory, StringComparison.OrdinalIgnoreCase)).Sum(s => s.Count * s.UnitCardinal));
                         }
                         row++;
@@ -81,7 +81,7 @@ namespace MonthRevenue
                         for (int i = 2; i < projects.Count + 2; i++)
                         {
                             var columCategory = GetColumnCategory(worksheet, i);
-                            var columName = worksheet.Cell(1, i).GetString();
+                            var columName = GetColumnName(worksheet, i); 
                             worksheet.Cell(row, i).Value = dics[employee.Name].Values.Sum(s => s.Where(w => w.ProjectName.Equals(columName, StringComparison.OrdinalIgnoreCase) && (w.ProjectCategory ?? "").Equals(columCategory, StringComparison.OrdinalIgnoreCase)).Sum(s => s.Count * s.UnitPerformance));
                         }
                         row++;
