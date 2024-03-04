@@ -104,10 +104,13 @@ namespace MonthRevenue
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 // 获取选定的文件名
-                string fileName = openFileDialog.FileName;
-                var datas = UploadExcel.Upload(fileName);
-                context.RevenueDay.AddRange(datas);
-                context.SaveChanges();
+                string[] fileNames = openFileDialog.FileNames;
+                foreach(var fileName in fileNames)
+                {
+                    var datas = UploadExcel.Upload(fileName);
+                    context.RevenueDay.AddRange(datas);
+                    context.SaveChanges();
+                }
                 MessageBox.Show("数据导入成功", "导入成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 InitData();
             }

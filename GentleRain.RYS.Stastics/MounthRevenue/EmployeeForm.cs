@@ -91,7 +91,7 @@ namespace MonthRevenue
                 return;
             }
             var entity = context.Employees.Find(updateId);
-            if(entity == null)
+            if (entity == null)
             {
                 MessageBox.Show("该员工不存在");
                 updateId = -1;
@@ -103,6 +103,11 @@ namespace MonthRevenue
             context.SaveChanges();
             updateId = -1;
             InitData();
+        }
+
+        private void dgvEmployee_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            context.SaveChanges();
         }
     }
 }

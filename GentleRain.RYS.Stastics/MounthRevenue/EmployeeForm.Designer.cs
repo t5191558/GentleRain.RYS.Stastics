@@ -44,17 +44,18 @@
             // dgvEmployee
             // 
             dgvEmployee.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvEmployee.Location = new Point(33, 74);
+            dgvEmployee.Location = new Point(29, 74);
             dgvEmployee.Name = "dgvEmployee";
             dgvEmployee.RowHeadersWidth = 51;
-            dgvEmployee.Size = new Size(1177, 458);
+            dgvEmployee.Size = new Size(1046, 458);
             dgvEmployee.TabIndex = 0;
             dgvEmployee.CellDoubleClick += dgvEmployee_CellDoubleClick;
+            dgvEmployee.CellEndEdit += dgvEmployee_CellEndEdit;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(33, 35);
+            label1.Location = new Point(29, 35);
             label1.Name = "label1";
             label1.Size = new Size(39, 20);
             label1.TabIndex = 1;
@@ -62,15 +63,15 @@
             // 
             // txtName
             // 
-            txtName.Location = new Point(101, 28);
+            txtName.Location = new Point(90, 28);
             txtName.Name = "txtName";
-            txtName.Size = new Size(140, 27);
+            txtName.Size = new Size(125, 27);
             txtName.TabIndex = 2;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(272, 35);
+            label2.Location = new Point(242, 35);
             label2.Name = "label2";
             label2.Size = new Size(39, 20);
             label2.TabIndex = 3;
@@ -78,32 +79,32 @@
             // 
             // txtSocial
             // 
-            txtSocial.Location = new Point(342, 28);
+            txtSocial.Location = new Point(304, 28);
             txtSocial.Name = "txtSocial";
-            txtSocial.Size = new Size(140, 27);
+            txtSocial.Size = new Size(125, 27);
             txtSocial.TabIndex = 4;
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(533, 35);
+            label3.Location = new Point(474, 35);
             label3.Name = "label3";
-            label3.Size = new Size(54, 20);
+            label3.Size = new Size(55, 20);
             label3.TabIndex = 5;
             label3.Text = "公积金";
             // 
             // txtFound
             // 
-            txtFound.Location = new Point(623, 28);
+            txtFound.Location = new Point(554, 28);
             txtFound.Name = "txtFound";
-            txtFound.Size = new Size(140, 27);
+            txtFound.Size = new Size(125, 27);
             txtFound.TabIndex = 6;
             // 
             // btnAdd
             // 
-            btnAdd.Location = new Point(832, 28);
+            btnAdd.Location = new Point(740, 28);
             btnAdd.Name = "btnAdd";
-            btnAdd.Size = new Size(106, 29);
+            btnAdd.Size = new Size(94, 29);
             btnAdd.TabIndex = 7;
             btnAdd.Text = "新增";
             btnAdd.UseVisualStyleBackColor = true;
@@ -111,9 +112,9 @@
             // 
             // btnUpdate
             // 
-            btnUpdate.Location = new Point(989, 31);
+            btnUpdate.Location = new Point(879, 31);
             btnUpdate.Name = "btnUpdate";
-            btnUpdate.Size = new Size(106, 29);
+            btnUpdate.Size = new Size(94, 29);
             btnUpdate.TabIndex = 8;
             btnUpdate.Text = "修改";
             btnUpdate.UseVisualStyleBackColor = true;
@@ -121,9 +122,9 @@
             // 
             // EmployeeForm
             // 
-            AutoScaleDimensions = new SizeF(9F, 20F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1282, 561);
+            ClientSize = new Size(1140, 561);
             Controls.Add(btnUpdate);
             Controls.Add(btnAdd);
             Controls.Add(txtFound);
