@@ -103,7 +103,7 @@ namespace MonthRevenue
                 return;
             }
             var entity = context.Projects.Find(updateId);
-            if(entity == null)
+            if (entity == null)
             {
                 MessageBox.Show("该项目不存在");
                 updateId = -1;
@@ -121,10 +121,30 @@ namespace MonthRevenue
         private void dgvProject_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             updateId = e.RowIndex >= 0 ? int.Parse(dgvProject.Rows[e.RowIndex].Cells["Id"].Value.ToString() ?? "0") : 0;
-            txtCategory.Text = e.RowIndex >= 0 ? dgvProject.Rows[e.RowIndex].Cells["Category"].Value?.ToString() ?? "" : "";  
+            txtCategory.Text = e.RowIndex >= 0 ? dgvProject.Rows[e.RowIndex].Cells["Category"].Value?.ToString() ?? "" : "";
             txtName.Text = e.RowIndex >= 0 ? dgvProject.Rows[e.RowIndex].Cells["Name"].Value.ToString() : "";
             txtCardinal.Text = e.RowIndex >= 0 ? dgvProject.Rows[e.RowIndex].Cells["Cardinal"].Value.ToString() : "0";
             txtPerformance.Text = e.RowIndex >= 0 ? dgvProject.Rows[e.RowIndex].Cells["Performance"].Value.ToString() : "0";
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (!ValidData())
+            {
+                return;
+            }
+            var entity = context.Projects.Find(updateId);
+            if (entity == null)
+            {
+                MessageBox.Show("该项目不存在");
+                updateId = -1;
+                return;
+            }
+            context.Projects.Remove(entity);    
+            context.SaveChanges();
+            updateId = -1;
+            InitData();
+
         }
     }
 }

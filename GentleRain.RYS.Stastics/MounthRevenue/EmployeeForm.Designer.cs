@@ -38,6 +38,7 @@
             txtFound = new TextBox();
             btnAdd = new Button();
             btnUpdate = new Button();
+            btnDelete = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvEmployee).BeginInit();
             SuspendLayout();
             // 
@@ -120,11 +121,22 @@
             btnUpdate.UseVisualStyleBackColor = true;
             btnUpdate.Click += btnUpdate_Click;
             // 
+            // btnDelete
+            // 
+            btnDelete.Location = new Point(1004, 33);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(94, 29);
+            btnDelete.TabIndex = 9;
+            btnDelete.Text = "删除";
+            btnDelete.UseVisualStyleBackColor = true;
+            btnDelete.Click += btnDelete_Click;
+            // 
             // EmployeeForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1140, 561);
+            Controls.Add(btnDelete);
             Controls.Add(btnUpdate);
             Controls.Add(btnAdd);
             Controls.Add(txtFound);
@@ -154,5 +166,6 @@
         private TextBox txtFound;
         private Button btnAdd;
         private Button btnUpdate;
+        private Button btnDelete;
     }
 }

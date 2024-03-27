@@ -109,5 +109,24 @@ namespace MonthRevenue
         {
             context.SaveChanges();
         }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (!ValidData())
+            {
+                return;
+            }
+            var entity = context.Employees.Find(updateId);
+            if (entity == null)
+            {
+                MessageBox.Show("该员工不存在");
+                updateId = -1;
+                return;
+            }
+            context.Employees.Remove(entity);
+            context.SaveChanges();
+            updateId = -1;
+            InitData();
+        }
     }
 }

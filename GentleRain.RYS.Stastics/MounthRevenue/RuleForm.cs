@@ -84,7 +84,7 @@ namespace MonthRevenue
                 return;
             }
             var entity = context.Bonus.Find(updateId);
-            if(entity == null)
+            if (entity == null)
             {
                 MessageBox.Show("该记录不存在");
                 updateId = -1;
@@ -93,6 +93,25 @@ namespace MonthRevenue
             entity.Low = decimal.Parse(txtLow.Text);
             entity.High = decimal.Parse(txtHigh.Text);
             entity.Rate = decimal.Parse(txtRate.Text);
+            context.SaveChanges();
+            updateId = -1;
+            InitData();
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (!ValidData())
+            {
+                return;
+            }
+            var entity = context.Bonus.Find(updateId);
+            if (entity == null)
+            {
+                MessageBox.Show("该记录不存在");
+                updateId = -1;
+                return;
+            }
+            context.Bonus.Remove(entity);
             context.SaveChanges();
             updateId = -1;
             InitData();

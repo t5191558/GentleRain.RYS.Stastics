@@ -38,72 +38,73 @@
             txtRate = new TextBox();
             txtAdd = new Button();
             btnUpdate = new Button();
+            btnDelete = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvRule).BeginInit();
             SuspendLayout();
             // 
             // dgvRule
             // 
             dgvRule.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvRule.Location = new Point(32, 96);
+            dgvRule.Location = new Point(28, 96);
             dgvRule.Name = "dgvRule";
             dgvRule.RowHeadersWidth = 51;
-            dgvRule.Size = new Size(1001, 308);
+            dgvRule.Size = new Size(890, 308);
             dgvRule.TabIndex = 0;
             dgvRule.CellDoubleClick += dgvRule_CellDoubleClick;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(34, 15);
+            label1.Location = new Point(30, 15);
             label1.Name = "label1";
-            label1.Size = new Size(109, 20);
+            label1.Size = new Size(110, 20);
             label1.TabIndex = 1;
             label1.Text = "金额开始(包含)";
             // 
             // txtLow
             // 
-            txtLow.Location = new Point(177, 12);
+            txtLow.Location = new Point(157, 12);
             txtLow.Name = "txtLow";
-            txtLow.Size = new Size(140, 27);
+            txtLow.Size = new Size(125, 27);
             txtLow.TabIndex = 2;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(343, 15);
+            label2.Location = new Point(305, 15);
             label2.Name = "label2";
-            label2.Size = new Size(124, 20);
+            label2.Size = new Size(126, 20);
             label2.TabIndex = 3;
             label2.Text = "金额结束(不包含)";
             // 
             // txtHigh
             // 
-            txtHigh.Location = new Point(515, 15);
+            txtHigh.Location = new Point(458, 15);
             txtHigh.Name = "txtHigh";
-            txtHigh.Size = new Size(140, 27);
+            txtHigh.Size = new Size(125, 27);
             txtHigh.TabIndex = 4;
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(686, 18);
+            label3.Location = new Point(610, 18);
             label3.Name = "label3";
-            label3.Size = new Size(118, 20);
+            label3.Size = new Size(117, 20);
             label3.TabIndex = 5;
             label3.Text = "提成比率(小于1)";
             // 
             // txtRate
             // 
-            txtRate.Location = new Point(838, 17);
+            txtRate.Location = new Point(745, 17);
             txtRate.Name = "txtRate";
-            txtRate.Size = new Size(140, 27);
+            txtRate.Size = new Size(125, 27);
             txtRate.TabIndex = 6;
             // 
             // txtAdd
             // 
-            txtAdd.Location = new Point(36, 55);
+            txtAdd.Location = new Point(32, 55);
             txtAdd.Name = "txtAdd";
-            txtAdd.Size = new Size(106, 29);
+            txtAdd.Size = new Size(94, 29);
             txtAdd.TabIndex = 7;
             txtAdd.Text = "新增";
             txtAdd.UseVisualStyleBackColor = true;
@@ -111,19 +112,30 @@
             // 
             // btnUpdate
             // 
-            btnUpdate.Location = new Point(177, 55);
+            btnUpdate.Location = new Point(157, 55);
             btnUpdate.Name = "btnUpdate";
-            btnUpdate.Size = new Size(106, 29);
+            btnUpdate.Size = new Size(94, 29);
             btnUpdate.TabIndex = 8;
             btnUpdate.Text = "修改";
             btnUpdate.UseVisualStyleBackColor = true;
             btnUpdate.Click += btnUpdate_Click;
             // 
+            // btnDelete
+            // 
+            btnDelete.Location = new Point(284, 57);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(94, 29);
+            btnDelete.TabIndex = 9;
+            btnDelete.Text = "删除";
+            btnDelete.UseVisualStyleBackColor = true;
+            btnDelete.Click += btnDelete_Click;
+            // 
             // RuleForm
             // 
-            AutoScaleDimensions = new SizeF(9F, 20F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1136, 450);
+            ClientSize = new Size(1010, 450);
+            Controls.Add(btnDelete);
             Controls.Add(btnUpdate);
             Controls.Add(txtAdd);
             Controls.Add(txtRate);
@@ -153,5 +165,6 @@
         private TextBox txtRate;
         private Button txtAdd;
         private Button btnUpdate;
+        private Button btnDelete;
     }
 }
