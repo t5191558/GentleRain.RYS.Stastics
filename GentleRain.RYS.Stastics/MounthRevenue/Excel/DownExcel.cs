@@ -232,8 +232,7 @@ namespace MonthRevenue
                 
                 
 
-                MergeColumnHead(worksheet, column,minCell: 1);
-                Center(worksheet, column);
+                //MergeColumnHead(worksheet, column,minCell: 1);
 
                 //填充数据
                 int row = 3;
@@ -276,6 +275,8 @@ namespace MonthRevenue
                     row += 4;
                 }
 
+                MergeColumnHead(worksheet, column,minCell: 1);
+                Center(worksheet, column);
                 // 保存工作簿
                 workbook.SaveAs(filepath);
             }
