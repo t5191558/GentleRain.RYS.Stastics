@@ -1,0 +1,6 @@
+@GentleRain.RYS.MkApi_HostAddress = http://localhost:5177
+
+GET {{GentleRain.RYS.MkApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

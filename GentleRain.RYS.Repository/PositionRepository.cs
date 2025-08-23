@@ -55,5 +55,10 @@ namespace GentleRain.RYS.Repository
         {
             throw new NotImplementedException();
         }
+
+        Task<Lib.Position> IRepository<Lib.Position>.AddAsync(Lib.Position entity)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace MonthRevenue
             MonthContext context = new MonthContext();
             var projects = context.Projects.ToList();
             var employees = context.Employees.ToList();
-            using (XLWorkbook workbook = new XLWorkbook(filename))
+            using (XLWorkbook workbook = new XLWorkbook(filename, new LoadOptions {  }))
             {
                 // 获取工作簿中的第一个工作表
                 IXLWorksheet worksheet = workbook.Worksheet(1);

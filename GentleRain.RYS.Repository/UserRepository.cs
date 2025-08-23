@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GentleRain.RYS.Repository
 {
-    public class UserRepository : BaseRepository, IUserRepository<User,Lib.User>
+    public class UserRepository : BaseRepository, IUserRepository
     {        
         public UserRepository(StasticDbContext dbContext):base(dbContext){}
 
@@ -28,6 +28,16 @@ namespace GentleRain.RYS.Repository
         }
 
         public Task<Lib.User?> GetByCodeAsync(string code)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Lib.User> GetByNameAsync(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Lib.User>> GetByPosition(string code)
         {
             throw new NotImplementedException();
         }
@@ -53,6 +63,16 @@ namespace GentleRain.RYS.Repository
         }
 
         public Task<IEnumerable<Lib.User>> WhereAsync(Expression<Func<User, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Lib.User>> WhereAsync(Expression<Func<Lib.User, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<Lib.User> IRepository<Lib.User>.AddAsync(Lib.User entity)
         {
             throw new NotImplementedException();
         }
