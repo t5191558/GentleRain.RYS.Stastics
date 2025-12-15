@@ -15,15 +15,318 @@ namespace MonthRevenue
     {
         private readonly MonthContext context = new MonthContext();
         private BindingList<BonusMainEntity> mainBindingList = new();
-        private int selectedBonusId = -1;
+        private BindingList<BonusEntity> ruleBindingList = new();
         private int selectedMainId = -1;
         private bool isBindingMainForm;
 
         public RuleForm()
         {
             InitializeComponent();
+            InitializeDataGridViewStyle();
             InitData();
         }
+        
+        private void InitializeDataGridViewStyle()
+        {
+            // 设置 BonusMain 表格 - 可编辑
+            dgvBonusMain.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvBonusMain.MultiSelect = false;
+            dgvBonusMain.AllowUserToAddRows = true;
+            dgvBonusMain.AllowUserToDeleteRows = true;
+            dgvBonusMain.ReadOnly = false;
+            dgvBonusMain.DefaultCellStyle.SelectionBackColor = Color.LightBlue;
+            dgvBonusMain.DefaultCellStyle.SelectionForeColor = Color.Black;
+            dgvBonusMain.RowHeadersVisible = true;
+            dgvBonusMain.AutoGenerateColumns = false;
+            dgvBonusMain.EditMode = DataGridViewEditMode.EditOnEnter;
+            
+            // 配置 BonusMain 列
+            ConfigureBonusMainColumns();
+            
+            // 设置 Rule 表格 - 可编辑
+            dgvRule.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvRule.MultiSelect = false;
+            dgvRule.AllowUserToAddRows = true;
+            dgvRule.AllowUserToDeleteRows = true;
+            dgvRule.ReadOnly = false;
+            dgvRule.DefaultCellStyle.SelectionBackColor = Color.LightBlue;
+            dgvRule.DefaultCellStyle.SelectionForeColor = Color.Black;
+            dgvRule.RowHeadersVisible = true;
+            dgvRule.AutoGenerateColumns = false;
+            dgvRule.EditMode = DataGridViewEditMode.EditOnEnter;
+            
+            // 配置 Rule 列
+            ConfigureRuleColumns();
+            
+            // 添加右键菜单
+            AddContextMenus();
+            
+            // 绑定事件
+            dgvBonusMain.UserDeletingRow += dgvBonusMain_UserDeletingRow;
+            dgvBonusMain.CellValueChanged += dgvBonusMain_CellValueChanged;
+            dgvBonusMain.RowValidating += dgvBonusMain_RowValidating;
+            dgvBonusMain.KeyDown += dgvBonusMain_KeyDown;
+            
+            dgvRule.UserDeletingRow += dgvRule_UserDeletingRow;
+            dgvRule.CellValueChanged += dgvRule_CellValueChanged;
+            dgvRule.RowValidating += dgvRule_RowValidating;
+            dgvRule.KeyDown += dgvRule_KeyDown;
+        }
+
+        private void AddContextMenus()
+        {
+            // 为 BonusMain 表格添加右键菜单
+            var mainContextMenu = new ContextMenuStrip();
+            var mainDeleteItem = new ToolStripMenuItem("删除方案 (Delete)", null, (s, e) => DeleteSelectedMainRow());
+            mainDeleteItem.ShortcutKeys = Keys.Delete;
+            mainContextMenu.Items.Add(mainDeleteItem);
+            dgvBonusMain.ContextMenuStrip = mainContextMenu;
+            
+            // 为 Rule 表格添加右键菜单
+            var ruleContextMenu = new ContextMenuStrip();
+            var ruleDeleteItem = new ToolStripMenuItem("删除规则 (Delete)", null, (s, e) => DeleteSelectedRuleRow());
+            ruleDeleteItem.ShortcutKeys = Keys.Delete;
+            ruleContextMenu.Items.Add(ruleDeleteItem);
+            dgvRule.ContextMenuStrip = ruleContextMenu;
+        }
+
+        private void dgvBonusMain_KeyDown(object? sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete && !dgvBonusMain.IsCurrentCellInEditMode)
+            {
+                DeleteSelectedMainRow();
+                e.Handled = true;
+            }
+        }
+
+        private void dgvRule_KeyDown(object? sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete && !dgvRule.IsCurrentCellInEditMode)
+            {
+                DeleteSelectedRuleRow();
+                e.Handled = true;
+            }
+        }
+
+        private void DeleteSelectedMainRow()
+        {
+            if (dgvBonusMain.CurrentRow == null || dgvBonusMain.CurrentRow.IsNewRow)
+            {
+                return;
+            }
+
+            if (dgvBonusMain.CurrentRow.DataBoundItem is not BonusMainEntity entity || entity.Id <= 0)
+            {
+                return;
+            }
+
+            var confirm = MessageBox.Show(
+                $"确定要删除方案 '{entity.Name}' 吗？\n\n删除该方案会同时删除所有关联的提成规则！",
+                "删除确认",
+                MessageBoxButtons.OKCancel,
+                MessageBoxIcon.Warning,
+                MessageBoxDefaultButton.Button2);
+
+            if (confirm != DialogResult.OK)
+            {
+                return;
+            }
+
+            try
+            {
+                var rules = context.Bonus.Where(b => b.BonusMainId == entity.Id).ToList();
+                if (rules.Any())
+                {
+                    context.Bonus.RemoveRange(rules);
+                }
+                context.BonusMain.Remove(entity);
+                context.SaveChanges();
+                
+                mainBindingList.Remove(entity);
+                EnsureDefaultScheme();
+                
+                MessageBox.Show("方案删除成功！", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"删除失败：{ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void DeleteSelectedRuleRow()
+        {
+            if (dgvRule.CurrentRow == null || dgvRule.CurrentRow.IsNewRow)
+            {
+                return;
+            }
+
+            if (dgvRule.CurrentRow.DataBoundItem is not BonusEntity entity || entity.Id <= 0)
+            {
+                return;
+            }
+
+            var confirm = MessageBox.Show(
+                $"确定要删除该提成规则吗？\n\n金额范围：{entity.Low:N2} - {entity.High:N2}\n提成比率：{entity.Rate:P2}",
+                "删除确认",
+                MessageBoxButtons.OKCancel,
+                MessageBoxIcon.Warning,
+                MessageBoxDefaultButton.Button2);
+
+            if (confirm != DialogResult.OK)
+            {
+                return;
+            }
+
+            try
+            {
+                context.Bonus.Remove(entity);
+                context.SaveChanges();
+                
+                ruleBindingList.Remove(entity);
+                
+                MessageBox.Show("规则删除成功！", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"删除失败：{ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        
+        private void ConfigureBonusMainColumns()
+        {
+            dgvBonusMain.Columns.Clear();
+            
+            // ID 列 - 隐藏
+            var colId = new DataGridViewTextBoxColumn
+            {
+                Name = "Id",
+                DataPropertyName = "Id",
+                HeaderText = "ID",
+                Visible = false,
+                ReadOnly = true
+            };
+            dgvBonusMain.Columns.Add(colId);
+            
+            // 方案名称
+            var colName = new DataGridViewTextBoxColumn
+            {
+                Name = "Name",
+                DataPropertyName = "Name",
+                HeaderText = "方案名称",
+                Width = 150,
+                ReadOnly = false
+            };
+            dgvBonusMain.Columns.Add(colName);
+            
+            // 方案说明
+            var colDesc = new DataGridViewTextBoxColumn
+            {
+                Name = "Desc",
+                DataPropertyName = "Desc",
+                HeaderText = "方案说明",
+                Width = 200,
+                ReadOnly = false
+            };
+            dgvBonusMain.Columns.Add(colDesc);
+            
+            // 底薪
+            var colBasicPay = new DataGridViewTextBoxColumn
+            {
+                Name = "BasicPay",
+                DataPropertyName = "BasicPay",
+                HeaderText = "底薪",
+                Width = 100,
+                ReadOnly = false,
+                DefaultCellStyle = { Format = "N2" }
+            };
+            dgvBonusMain.Columns.Add(colBasicPay);
+            
+            // 启用
+            var colIsActive = new DataGridViewCheckBoxColumn
+            {
+                Name = "IsActive",
+                DataPropertyName = "IsActive",
+                HeaderText = "启用",
+                Width = 60,
+                ReadOnly = false
+            };
+            dgvBonusMain.Columns.Add(colIsActive);
+            
+            // 默认
+            var colIsDefault = new DataGridViewCheckBoxColumn
+            {
+                Name = "IsDefault",
+                DataPropertyName = "IsDefault",
+                HeaderText = "默认",
+                Width = 60,
+                ReadOnly = false
+            };
+            dgvBonusMain.Columns.Add(colIsDefault);
+        }
+
+        private void ConfigureRuleColumns()
+        {
+            dgvRule.Columns.Clear();
+            
+            // ID 列 - 隐藏
+            var colId = new DataGridViewTextBoxColumn
+            {
+                Name = "Id",
+                DataPropertyName = "Id",
+                HeaderText = "ID",
+                Visible = false,
+                ReadOnly = true
+            };
+            dgvRule.Columns.Add(colId);
+            
+            // BonusMainId - 隐藏
+            var colMainId = new DataGridViewTextBoxColumn
+            {
+                Name = "BonusMainId",
+                DataPropertyName = "BonusMainId",
+                HeaderText = "BonusMainId",
+                Visible = false,
+                ReadOnly = true
+            };
+            dgvRule.Columns.Add(colMainId);
+            
+            // 金额开始
+            var colLow = new DataGridViewTextBoxColumn
+            {
+                Name = "Low",
+                DataPropertyName = "Low",
+                HeaderText = "金额开始(包含)",
+                Width = 150,
+                ReadOnly = false,
+                DefaultCellStyle = { Format = "N2" }
+            };
+            dgvRule.Columns.Add(colLow);
+            
+            // 金额结束
+            var colHigh = new DataGridViewTextBoxColumn
+            {
+                Name = "High",
+                DataPropertyName = "High",
+                HeaderText = "金额结束(不包含)",
+                Width = 150,
+                ReadOnly = false,
+                DefaultCellStyle = { Format = "N2" }
+            };
+            dgvRule.Columns.Add(colHigh);
+            
+            // 提成比率
+            var colRate = new DataGridViewTextBoxColumn
+            {
+                Name = "Rate",
+                DataPropertyName = "Rate",
+                HeaderText = "提成比率(小于1)",
+                Width = 150,
+                ReadOnly = false,
+                DefaultCellStyle = { Format = "N4" }
+            };
+            dgvRule.Columns.Add(colRate);
+        }
+        
         private void InitData()
         {
             LoadMainList();
@@ -36,18 +339,30 @@ namespace MonthRevenue
             mainBindingList = new BindingList<BonusMainEntity>(mainList);
             mainBindingList.ListChanged += MainBindingList_ListChanged;
             dgvBonusMain.DataSource = mainBindingList;
-            if (!mainBindingList.Any())
+            
+            if (mainBindingList.Any())
+            {
+                if (mainIdToSelect.HasValue)
+                {
+                    var target = mainBindingList.FirstOrDefault(m => m.Id == mainIdToSelect.Value);
+                    if (target != null)
+                    {
+                        selectedMainId = target.Id;
+                        HighlightMainRow(target.Id);
+                    }
+                }
+                else if (selectedMainId <= 0)
+                {
+                    selectedMainId = mainBindingList.First().Id;
+                    HighlightMainRow(selectedMainId);
+                }
+                LoadBonusRules();
+            }
+            else
             {
                 selectedMainId = -1;
-                ResetMainForm();
                 LoadBonusRules();
-                return;
             }
-
-            var target = mainIdToSelect.HasValue ? mainBindingList.FirstOrDefault(m => m.Id == mainIdToSelect.Value) : mainBindingList.First();
-            target ??= mainBindingList.First();
-            BindMainForm(target);
-            HighlightMainRow(target.Id);
         }
 
         private void MainBindingList_ListChanged(object? sender, ListChangedEventArgs e)
@@ -65,446 +380,304 @@ namespace MonthRevenue
                 if (row.DataBoundItem is BonusMainEntity entity && entity.Id == id)
                 {
                     row.Selected = true;
-                    dgvBonusMain.CurrentCell = row.Cells[0];
+                    if (dgvBonusMain.Columns.Count > 0)
+                    {
+                        dgvBonusMain.CurrentCell = row.Cells[1]; // 选中第一个可见列
+                    }
                     break;
                 }
             }
-        }
-
-        private void BindMainForm(BonusMainEntity entity)
-        {
-            isBindingMainForm = true;
-            selectedMainId = entity.Id;
-            txtMainName.Text = entity.Name;
-            txtMainDesc.Text = entity.Desc ?? string.Empty;
-            txtBasicPay.Text = (entity.BasicPay ?? 0).ToString("F2");
-            chkMainActive.Checked = entity.IsActive;
-            chkMainDefault.Checked = entity.IsActive && entity.IsDefault;
-            chkMainDefault.Enabled = entity.IsActive;
-            isBindingMainForm = false;
-            LoadBonusRules();
-        }
-
-        private void ResetMainForm()
-        {
-            isBindingMainForm = true;
-            txtMainName.Text = string.Empty;
-            txtMainDesc.Text = string.Empty;
-            txtBasicPay.Text = "0.00";
-            chkMainActive.Checked = true;
-            chkMainDefault.Checked = false;
-            chkMainDefault.Enabled = true;
-            isBindingMainForm = false;
         }
 
         private void LoadBonusRules()
         {
             if (selectedMainId <= 0)
             {
-                dgvRule.DataSource = null;
-                selectedBonusId = -1;
-                ResetBonusForm();
+                ruleBindingList = new BindingList<BonusEntity>();
+                dgvRule.DataSource = ruleBindingList;
                 return;
             }
 
             var rules = context.Bonus.Where(b => b.BonusMainId == selectedMainId).OrderBy(b => (double)b.Low).ToList();
-            dgvRule.DataSource = rules;
-            selectedBonusId = -1;
-            ResetBonusForm();
-        }
-
-        private void ResetBonusForm()
-        {
-            txtLow.Text = string.Empty;
-            txtHigh.Text = string.Empty;
-            txtRate.Text = string.Empty;
-        }
-
-        private bool ValidData(out decimal low, out decimal high, out decimal rate)
-        {
-            low = high = rate = 0;
-            if (!decimal.TryParse(txtLow.Text, out low))
-            {
-                MessageBox.Show("金额开始必须为数字");
-                return false;
-            }
-
-            if (!decimal.TryParse(txtHigh.Text, out high))
-            {
-                MessageBox.Show("金额结束必须为数字");
-                return false;
-            }
-
-            if (high <= low)
-            {
-                MessageBox.Show("金额结束必须大于金额开始");
-                return false;
-            }
-
-            if (!decimal.TryParse(txtRate.Text, out rate))
-            {
-                MessageBox.Show("比率必须为数字");
-                return false;
-            }
-            if (rate >= 1)
-            {
-                MessageBox.Show("比率必须小于1");
-                return false;
-            }
-
-            if (selectedMainId <= 0)
-            {
-                MessageBox.Show("请选择提成方案");
-                return false;
-            }
-
-            return true;
-        }
-
-        private bool ValidMainData()
-        {
-            if (string.IsNullOrWhiteSpace(txtMainName.Text))
-            {
-                MessageBox.Show("请输入方案名称");
-                return false;
-            }
-
-            if (!string.IsNullOrWhiteSpace(txtBasicPay.Text))
-            {
-                if (!decimal.TryParse(txtBasicPay.Text, out decimal basicPay))
-                {
-                    MessageBox.Show("底薪必须为数字");
-                    return false;
-                }
-
-                if (basicPay < 0)
-                {
-                    MessageBox.Show("底薪不能为负数");
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private void txtAdd_Click(object sender, EventArgs e)
-        {
-            if (!ValidData(out var low, out var high, out var rate))
-            {
-                return;
-            }
-            BonusEntity entity = new BonusEntity();
-            entity.Low = low;
-            entity.High = high;
-            entity.Rate = rate;
-            entity.BonusMainId = selectedMainId;
-            context.Bonus.Add(entity);
-            context.SaveChanges();
-            LoadBonusRules();
-        }
-
-        private void dgvRule_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0)
-            {
-                return;
-            }
-
-            if (dgvRule.Rows[e.RowIndex].DataBoundItem is not BonusEntity entity)
-            {
-                return;
-            }
-
-            selectedBonusId = entity.Id;
-            txtLow.Text = entity.Low.ToString();
-            txtHigh.Text = entity.High.ToString();
-            txtRate.Text = entity.Rate.ToString();
-        }
-
-        private void btnUpdate_Click(object sender, EventArgs e)
-        {
-            if (selectedBonusId <= 0)
-            {
-                MessageBox.Show("请选择要修改的规则");
-                return;
-            }
-
-            if (!ValidData(out var low, out var high, out var rate))
-            {
-                return;
-            }
-
-            var entity = context.Bonus.FirstOrDefault(b => b.Id == selectedBonusId && b.BonusMainId == selectedMainId);
-            if (entity == null)
-            {
-                MessageBox.Show("该记录不存在");
-                selectedBonusId = -1;
-                return;
-            }
-            entity.Low = low;
-            entity.High = high;
-            entity.Rate = rate;
-            context.SaveChanges();
-            selectedBonusId = -1;
-            LoadBonusRules();
-        }
-
-        private void btnDelete_Click(object sender, EventArgs e)
-        {
-            if (selectedBonusId <= 0)
-            {
-                MessageBox.Show("请选择要删除的规则");
-                return;
-            }
-
-            var entity = context.Bonus.FirstOrDefault(b => b.Id == selectedBonusId && b.BonusMainId == selectedMainId);
-            if (entity == null)
-            {
-                MessageBox.Show("该记录不存在");
-                selectedBonusId = -1;
-                return;
-            }
-            context.Bonus.Remove(entity);
-            context.SaveChanges();
-            selectedBonusId = -1;
-            LoadBonusRules();
-        }
-
-        private void btnMainAdd_Click(object sender, EventArgs e)
-        {
-            if (!ValidMainData())
-            {
-                return;
-            }
-
-            var isActive = chkMainActive.Checked;
-            var requestDefault = chkMainDefault.Checked && isActive;
-            var desc = txtMainDesc.Text.Trim();
-            
-            decimal? basicPay = null;
-            if (!string.IsNullOrWhiteSpace(txtBasicPay.Text) && decimal.TryParse(txtBasicPay.Text, out decimal parsedBasicPay))
-            {
-                basicPay = parsedBasicPay;
-            }
-            
-            if (requestDefault)
-            {
-                var otherMains = context.BonusMain.Where(m => m.IsDefault).ToList();
-                foreach (var other in otherMains)
-                {
-                    other.IsDefault = false;
-                }
-            }
-
-            var entity = new BonusMainEntity
-            {
-                Name = txtMainName.Text.Trim(),
-                Desc = string.IsNullOrEmpty(desc) ? null : desc,
-                BasicPay = basicPay,
-                IsActive = isActive,
-                IsDefault = requestDefault
-            };
-            context.BonusMain.Add(entity);
-            context.SaveChanges();
-            
-            if (!requestDefault)
-            {
-                EnsureDefaultScheme();
-            }
-            
-            LoadMainList(entity.Id);
-        }
-
-        private void btnMainUpdate_Click(object sender, EventArgs e)
-        {
-            if (selectedMainId <= 0)
-            {
-                MessageBox.Show("请选择要修改的方案");
-                return;
-            }
-
-            if (!ValidMainData())
-            {
-                return;
-            }
-
-            var entity = context.BonusMain.Find(selectedMainId);
-            if (entity == null)
-            {
-                MessageBox.Show("该记录不存在");
-                selectedMainId = -1;
-                return;
-            }
-
-            var hasRules = context.Bonus.Any(b => b.BonusMainId == selectedMainId);
-            if (!hasRules)
-            {
-                MessageBox.Show("该方案没有任何提成规则，无法保存");
-                return;
-            }
-
-            var isActive = chkMainActive.Checked;
-            var requestDefault = chkMainDefault.Checked && isActive;
-            var desc = txtMainDesc.Text.Trim();
-            
-            decimal? basicPay = null;
-            if (!string.IsNullOrWhiteSpace(txtBasicPay.Text) && decimal.TryParse(txtBasicPay.Text, out decimal parsedBasicPay))
-            {
-                basicPay = parsedBasicPay;
-            }
-
-            if (requestDefault)
-            {
-                var otherMains = context.BonusMain.Where(m => m.Id != selectedMainId && m.IsDefault).ToList();
-                foreach (var other in otherMains)
-                {
-                    other.IsDefault = false;
-                }
-            }
-
-            entity.Name = txtMainName.Text.Trim();
-            entity.Desc = string.IsNullOrEmpty(desc) ? null : desc;
-            entity.BasicPay = basicPay;
-            entity.IsActive = isActive;
-            entity.IsDefault = requestDefault;
-            context.SaveChanges();
-            
-            if (!requestDefault)
-            {
-                EnsureDefaultScheme();
-            }
-            
-            LoadMainList(entity.Id);
-        }
-
-        private void btnMainDelete_Click(object sender, EventArgs e)
-        {
-            if (selectedMainId <= 0)
-            {
-                MessageBox.Show("请选择要删除的方案");
-                return;
-            }
-
-            var confirm = MessageBox.Show("删除该方案会同时删除所有规则，是否继续？", "删除确认", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-            if (confirm != DialogResult.OK)
-            {
-                return;
-            }
-
-            var entity = context.BonusMain.Find(selectedMainId);
-            if (entity == null)
-            {
-                MessageBox.Show("该记录不存在");
-                selectedMainId = -1;
-                return;
-            }
-
-            var rules = context.Bonus.Where(b => b.BonusMainId == entity.Id).ToList();
-            if (rules.Any())
-            {
-                context.Bonus.RemoveRange(rules);
-            }
-            context.BonusMain.Remove(entity);
-            context.SaveChanges();
-            EnsureDefaultScheme();
-            LoadMainList();
-        }
-
-        private void dgvBonusMain_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0)
-            {
-                return;
-            }
-
-            if (dgvBonusMain.Rows[e.RowIndex].DataBoundItem is BonusMainEntity entity)
-            {
-                BindMainForm(entity);
-                HighlightMainRow(entity.Id);
-            }
+            ruleBindingList = new BindingList<BonusEntity>(rules);
+            dgvRule.DataSource = ruleBindingList;
         }
 
         private void dgvBonusMain_SelectionChanged(object sender, EventArgs e)
         {
-            if (dgvBonusMain.CurrentRow?.DataBoundItem is not BonusMainEntity entity)
+            if (dgvBonusMain.CurrentRow?.DataBoundItem is BonusMainEntity entity)
             {
-                return;
-            }
-
-            if (entity.Id == selectedMainId)
-            {
-                return;
-            }
-
-            BindMainForm(entity);
-        }
-
-        private void chkMainActive_CheckedChanged(object sender, EventArgs e)
-        {
-            if (isBindingMainForm)
-            {
-                return;
-            }
-
-            if (!chkMainActive.Checked)
-            {
-                chkMainDefault.Checked = false;
-                chkMainDefault.Enabled = false;
-            }
-            else
-            {
-                chkMainDefault.Enabled = true;
-            }
-        }
-
-        private void chkMainDefault_CheckedChanged(object sender, EventArgs e)
-        {
-            if (isBindingMainForm)
-            {
-                return;
-            }
-
-            if (!chkMainActive.Checked)
-            {
-                chkMainDefault.Checked = false;
-                return;
-            }
-
-            if (chkMainDefault.Checked && selectedMainId > 0)
-            {
-                UncheckOtherDefaults(selectedMainId);
-                
-                var currentEntity = mainBindingList.FirstOrDefault(m => m.Id == selectedMainId);
-                if (currentEntity != null)
+                if (entity.Id != selectedMainId)
                 {
-                    currentEntity.IsDefault = true;
-                }
-            }
-            else if (!chkMainDefault.Checked && selectedMainId > 0)
-            {
-                var currentEntity = mainBindingList.FirstOrDefault(m => m.Id == selectedMainId);
-                if (currentEntity != null)
-                {
-                    currentEntity.IsDefault = false;
+                    selectedMainId = entity.Id;
+                    LoadBonusRules();
                 }
             }
         }
 
-        private void HandleDefaultAfterSave(int entityId, bool requestDefault, bool isActive)
+        private void dgvBonusMain_UserDeletingRow(object? sender, DataGridViewRowCancelEventArgs e)
         {
-            if (!isActive)
+            if (e.Row.DataBoundItem is not BonusMainEntity entity || entity.Id <= 0)
             {
-                EnsureDefaultScheme();
                 return;
             }
 
-            if (requestDefault)
+            var confirm = MessageBox.Show($"确定要删除方案'{entity.Name}'吗？\n删除该方案会同时删除所有关联的提成规则！", 
+                "删除确认", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+            
+            if (confirm != DialogResult.OK)
             {
-                SetDefaultScheme(entityId);
+                e.Cancel = true;
+                return;
             }
-            else
+
+            try
             {
+                var rules = context.Bonus.Where(b => b.BonusMainId == entity.Id).ToList();
+                if (rules.Any())
+                {
+                    context.Bonus.RemoveRange(rules);
+                }
+                context.BonusMain.Remove(entity);
+                context.SaveChanges();
                 EnsureDefaultScheme();
+                MessageBox.Show("方案删除成功", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                e.Cancel = true;
+                MessageBox.Show($"删除失败：{ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void dgvBonusMain_CellValueChanged(object? sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || isBindingMainForm)
+            {
+                return;
+            }
+
+            try
+            {
+                var row = dgvBonusMain.Rows[e.RowIndex];
+                if (row.DataBoundItem is not BonusMainEntity entity)
+                {
+                    return;
+                }
+
+                // 处理 IsDefault 互斥逻辑
+                if (e.ColumnIndex == dgvBonusMain.Columns["IsDefault"].Index && entity.IsDefault)
+                {
+                    if (!entity.IsActive)
+                    {
+                        MessageBox.Show("只有启用的方案才能设为默认", "验证错误", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        entity.IsDefault = false;
+                        dgvBonusMain.RefreshEdit();
+                        return;
+                    }
+
+                    // 取消其他方案的默认状态
+                    foreach (var item in mainBindingList.Where(m => m.Id != entity.Id && m.IsDefault))
+                    {
+                        item.IsDefault = false;
+                    }
+                    dgvBonusMain.Refresh();
+                }
+
+                // 处理 IsActive 和 IsDefault 关联
+                if (e.ColumnIndex == dgvBonusMain.Columns["IsActive"].Index && !entity.IsActive)
+                {
+                    if (entity.IsDefault)
+                    {
+                        entity.IsDefault = false;
+                    }
+                }
+
+                if (entity.Id > 0)
+                {
+                    // 更新现有记录
+                    context.SaveChanges();
+                    EnsureDefaultScheme();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"保存失败：{ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void dgvBonusMain_RowValidating(object? sender, DataGridViewCellCancelEventArgs e)
+        {
+            var row = dgvBonusMain.Rows[e.RowIndex];
+            if (row.IsNewRow)
+            {
+                return;
+            }
+
+            if (row.DataBoundItem is not BonusMainEntity entity)
+            {
+                return;
+            }
+
+            // 验证新增的行
+            if (entity.Id <= 0)
+            {
+                if (string.IsNullOrWhiteSpace(entity.Name))
+                {
+                    MessageBox.Show("请输入方案名称", "验证错误", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    e.Cancel = true;
+                    return;
+                }
+
+                if (entity.BasicPay.HasValue && entity.BasicPay.Value < 0)
+                {
+                    MessageBox.Show("底薪不能为负数", "验证错误", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    e.Cancel = true;
+                    return;
+                }
+
+                try
+                {
+                    if (entity.IsDefault && !entity.IsActive)
+                    {
+                        MessageBox.Show("只有启用的方案才能设为默认", "验证错误", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        entity.IsDefault = false;
+                    }
+
+                    if (entity.IsDefault)
+                    {
+                        var otherDefaults = context.BonusMain.Where(m => m.IsDefault).ToList();
+                        foreach (var other in otherDefaults)
+                        {
+                            other.IsDefault = false;
+                        }
+                    }
+
+                    context.BonusMain.Add(entity);
+                    context.SaveChanges();
+                    
+                    if (!entity.IsDefault)
+                    {
+                        EnsureDefaultScheme();
+                    }
+
+                    LoadMainList(entity.Id);
+                    MessageBox.Show("方案新增成功", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    e.Cancel = true;
+                    MessageBox.Show($"保存失败：{ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void dgvRule_UserDeletingRow(object? sender, DataGridViewRowCancelEventArgs e)
+        {
+            if (e.Row.DataBoundItem is not BonusEntity entity || entity.Id <= 0)
+            {
+                return;
+            }
+
+            var confirm = MessageBox.Show("确定要删除该提成规则吗？", "删除确认", 
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+            
+            if (confirm != DialogResult.OK)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            try
+            {
+                context.Bonus.Remove(entity);
+                context.SaveChanges();
+                MessageBox.Show("规则删除成功", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                e.Cancel = true;
+                MessageBox.Show($"删除失败：{ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void dgvRule_CellValueChanged(object? sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0)
+            {
+                return;
+            }
+
+            try
+            {
+                var row = dgvRule.Rows[e.RowIndex];
+                if (row.DataBoundItem is not BonusEntity entity)
+                {
+                    return;
+                }
+
+                if (entity.Id > 0)
+                {
+                    // 更新现有记录
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"保存失败：{ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void dgvRule_RowValidating(object? sender, DataGridViewCellCancelEventArgs e)
+        {
+            var row = dgvRule.Rows[e.RowIndex];
+            if (row.IsNewRow)
+            {
+                return;
+            }
+
+            if (row.DataBoundItem is not BonusEntity entity)
+            {
+                return;
+            }
+
+            // 验证新增的行
+            if (entity.Id <= 0)
+            {
+                if (selectedMainId <= 0)
+                {
+                    MessageBox.Show("请先选择提成方案", "验证错误", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    e.Cancel = true;
+                    return;
+                }
+
+                if (entity.High <= entity.Low)
+                {
+                    MessageBox.Show("金额结束必须大于金额开始", "验证错误", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    e.Cancel = true;
+                    return;
+                }
+
+                if (entity.Rate >= 1 || entity.Rate < 0)
+                {
+                    MessageBox.Show("比率必须在0到1之间", "验证错误", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    e.Cancel = true;
+                    return;
+                }
+
+                try
+                {
+                    entity.BonusMainId = selectedMainId;
+                    context.Bonus.Add(entity);
+                    context.SaveChanges();
+                    LoadBonusRules();
+                    MessageBox.Show("规则新增成功", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    e.Cancel = true;
+                    MessageBox.Show($"保存失败：{ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -526,24 +699,6 @@ namespace MonthRevenue
             {
                 context.SaveChanges();
             }
-        }
-
-        private void UncheckOtherDefaults(int exceptId)
-        {
-            if (mainBindingList == null)
-            {
-                return;
-            }
-
-            foreach (var main in mainBindingList)
-            {
-                if (main.Id != exceptId && main.IsDefault)
-                {
-                    main.IsDefault = false;
-                }
-            }
-
-            dgvBonusMain.Refresh();
         }
 
         private void EnsureDefaultScheme()

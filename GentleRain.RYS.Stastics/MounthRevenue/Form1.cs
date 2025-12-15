@@ -1,4 +1,5 @@
 using MonthRevenue;
+using System.Reflection;
 
 namespace MounthRevenue
 {
@@ -7,6 +8,29 @@ namespace MounthRevenue
         public Form1()
         {
             InitializeComponent();
+            LoadVersionInfo();
+        }
+
+        private void LoadVersionInfo()
+        {
+            try
+            {
+                var assembly = Assembly.GetExecutingAssembly();
+                var version = assembly.GetName().Version;
+                
+                if (version != null)
+                {
+                    lblVersion.Text = $"版本: {version.Major}.{version.Minor}.{version.Build}";
+                }
+                else
+                {
+                    lblVersion.Text = "版本: 未知";
+                }
+            }
+            catch (Exception ex)
+            {
+                lblVersion.Text = $"版本: 读取失败 ({ex.Message})";
+            }
         }
 
         private void btnProject_Click(object sender, EventArgs e)
