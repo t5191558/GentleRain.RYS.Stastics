@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MonthRevenue.Repository;
 
@@ -10,9 +11,11 @@ using MonthRevenue.Repository;
 namespace MonthRevenue.Migrations
 {
     [DbContext(typeof(MonthContext))]
-    partial class MonthContextModelSnapshot : ModelSnapshot
+    [Migration("20240521000001_BonusMain")]
+    partial class BonusMain
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.1");
@@ -48,17 +51,11 @@ namespace MonthRevenue.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal?>("BasicPay")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Desc")
                         .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsDefault")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
@@ -68,22 +65,13 @@ namespace MonthRevenue.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IsDefault")
-                        .IsUnique()
-                        .HasFilter("IsDefault = 1");
-
                     b.ToTable("BonusMain");
-
-                    b.HasCheckConstraint("CK_BonusMain_IsDefaultRequiresActive", "IsActive = 1 OR IsDefault = 0");
                 });
 
             modelBuilder.Entity("MonthRevenue.Repository.EmployeeEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("BonusMainId")
                         .HasColumnType("INTEGER");
 
                     b.Property<decimal>("HousFund")
@@ -97,8 +85,6 @@ namespace MonthRevenue.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BonusMainId");
 
                     b.ToTable("Employee");
                 });
@@ -242,15 +228,6 @@ namespace MonthRevenue.Migrations
                         .HasForeignKey("BonusMainId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("BonusMain");
-                });
-
-            modelBuilder.Entity("MonthRevenue.Repository.EmployeeEntity", b =>
-                {
-                    b.HasOne("MonthRevenue.Repository.BonusMainEntity", "BonusMain")
-                        .WithMany()
-                        .HasForeignKey("BonusMainId");
 
                     b.Navigation("BonusMain");
                 });

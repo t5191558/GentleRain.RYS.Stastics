@@ -1,4 +1,4 @@
-﻿namespace MounthRevenue
+namespace MounthRevenue
 {
     partial class Form1
     {
@@ -33,6 +33,7 @@
             btnEmployee = new Button();
             btnBonusRule = new Button();
             btnRevenue = new Button();
+            lblVersion = new Label();
             SuspendLayout();
             // 
             // btnProject
@@ -75,11 +76,22 @@
             btnRevenue.UseVisualStyleBackColor = true;
             btnRevenue.Click += btnRevenue_Click;
             // 
+            // lblVersion
+            // 
+            lblVersion.AutoSize = true;
+            lblVersion.ForeColor = SystemColors.ControlDarkDark;
+            lblVersion.Location = new Point(12, 417);
+            lblVersion.Name = "lblVersion";
+            lblVersion.Size = new Size(69, 20);
+            lblVersion.TabIndex = 4;
+            lblVersion.Text = "版本: 1.0.0";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(9F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(lblVersion);
             Controls.Add(btnRevenue);
             Controls.Add(btnBonusRule);
             Controls.Add(btnEmployee);
@@ -89,6 +101,7 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "统计系统";
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -97,5 +110,6 @@
         private Button btnEmployee;
         private Button btnBonusRule;
         private Button btnRevenue;
+        private Label lblVersion;
     }
 }

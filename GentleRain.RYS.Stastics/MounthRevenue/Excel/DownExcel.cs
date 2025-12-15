@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
 using DocumentFormat.OpenXml.InkML;
 using DocumentFormat.OpenXml.Spreadsheet;
 using MonthRevenue.Repository;
@@ -12,6 +12,42 @@ namespace MonthRevenue
 {
     public static class DownExcel
     {
+        private static (List<BonusEntity> rules, decimal basicPay) GetEmployeeBonusScheme(MonthContext context, EmployeeEntity employee)
+        {
+            BonusMainEntity? bonusMain = null;
+            
+            if (employee.BonusMainId.HasValue)
+            {
+                bonusMain = context.BonusMain.Find(employee.BonusMainId.Value);
+            }
+            
+            if (bonusMain == null)
+            {
+                bonusMain = context.BonusMain
+                    .Where(m => m.IsActive && m.IsDefault)
+                    .OrderBy(m => m.Id)
+                    .FirstOrDefault();
+            }
+            
+            if (bonusMain == null)
+            {
+                bonusMain = context.BonusMain
+                    .Where(m => m.IsActive)
+                    .OrderBy(m => m.Id)
+                    .FirstOrDefault();
+            }
+            
+            if (bonusMain == null)
+            {
+                return (new List<BonusEntity>(), 0m);
+            }
+            
+            var rules = context.Bonus.Where(b => b.BonusMainId == bonusMain.Id).ToList();
+            var basicPay = bonusMain.BasicPay ?? 0m;
+            
+            return (rules, basicPay);
+        }
+
         //推拿统计
         public static void DownMassageExcel(DateTime start, DateTime end, string filepath)
         {
@@ -19,7 +55,7 @@ namespace MonthRevenue
             var datas = context.RevenueDay.Where(w => w.RevenueDate >= start && w.RevenueDate <= end);
             var projects = context.Projects.ToList();
             var employees = context.Employees.ToList();
-            var rule = context.Bonus.ToList();
+            
             Dictionary<string, Dictionary<DateTime, List<RevenueDayEntity>>> dics = new Dictionary<string, Dictionary<DateTime, List<RevenueDayEntity>>>();
             foreach (var data in datas)
             {
@@ -44,6 +80,12 @@ namespace MonthRevenue
             {
                 foreach (var employee in employees)
                 {
+                    var (rule, basicPay) = GetEmployeeBonusScheme(context, employee);
+                    if (!rule.Any())
+                    {
+                        continue;
+                    }
+                    
                     var worksheet = workbook.Worksheets.Add(employee.Name);
                     //第一行条件标题
                     worksheet.Range(1, 1, 2, 1).Merge();
@@ -96,9 +138,10 @@ namespace MonthRevenue
                         decimal cardinalperformance = actualCardinal * rule.Where(w => w.Low <= totalCardinal && w.High > totalCardinal).First().Rate;
                         worksheet.Cell(row, 5).Value = "团购提成";
                         decimal vipPerformance = dics[employee.Name].Values.Sum(s => s.Sum(RevenueFormula.Performance));
-                        worksheet.Cell(row, 6).Value = "合计";
-                        decimal totalPerformance = cardinalperformance + vipPerformance;
-                        worksheet.Cell(row, 7).Value = "提成比率";
+                        worksheet.Cell(row, 6).Value = "底薪";
+                        worksheet.Cell(row, 7).Value = "合计";
+                        decimal totalPerformance = cardinalperformance + vipPerformance + basicPay;
+                        worksheet.Cell(row, 8).Value = "提成比率";
                         decimal ratePerformance = rule.Where(w => w.Low <= totalCardinal && w.High > totalCardinal).First().Rate;
                         row++;
                         worksheet.Cell(row, 1).Value = totalCardinal;
@@ -106,8 +149,9 @@ namespace MonthRevenue
                         worksheet.Cell(row, 3).Value = actualCardinal;
                         worksheet.Cell(row, 4).Value = cardinalperformance;
                         worksheet.Cell(row, 5).Value = vipPerformance;
-                        worksheet.Cell(row, 6).Value = totalPerformance;
-                        worksheet.Cell(row, 7).Value = ratePerformance;
+                        worksheet.Cell(row, 6).Value = basicPay;
+                        worksheet.Cell(row, 7).Value = totalPerformance;
+                        worksheet.Cell(row, 8).Value = ratePerformance;
 
                         MergeColumnHead(worksheet, column);
                         Center(worksheet, column);
@@ -124,8 +168,7 @@ namespace MonthRevenue
             MonthContext context = new MonthContext();
             var datas = context.RevenueDay.Where(w => w.RevenueDate >= start && w.RevenueDate <= end);
             var projects = context.Projects.ToList();
-            var employees = context.Employees.ToList();
-            var rule = context.Bonus.ToList();
+            
             using (var workbook = new XLWorkbook())
             {
                 var worksheet = workbook.Worksheets.Add(start.ToString("yyyy-MM"));
@@ -185,7 +228,7 @@ namespace MonthRevenue
             var datas = context.RevenueDay.Where(w => w.RevenueDate >= start && w.RevenueDate <= end);
             var projects = context.Projects.ToList();
             var employees = context.Employees.ToList();
-            var rule = context.Bonus.ToList();
+            
             using (var workbook = new XLWorkbook())
             {
                 var worksheet = workbook.Worksheets.Add(start.ToString("yyyy-MM"));
@@ -210,6 +253,9 @@ namespace MonthRevenue
                 column++;
                 worksheet.Range(1, column, 2, column).Merge();
                 worksheet.Cell(1, column).Value = "会员卡";
+                column++;
+                worksheet.Range(1, column, 2, column).Merge();
+                worksheet.Cell(1, column).Value = "底薪";
                 column++;
                 worksheet.Range(1, column, 2, column).Merge();
                 worksheet.Cell(1, column).Value = "提成合计(含团购提成）";
@@ -241,6 +287,13 @@ namespace MonthRevenue
                     var needDatas = datas.Where(w => w.EmployeeId == employee.Id);
                     if (!needDatas.Any())
                         continue;
+                    
+                    var (rule, basicPay) = GetEmployeeBonusScheme(context, employee);
+                    if (!rule.Any())
+                    {
+                        continue;
+                    }
+                    
                     worksheet.Range(row, 1, row + 2, 1).Merge();
                     worksheet.Cell(row, 1).Value = employee.Name;
                     MatchProjectCount(worksheet, row, 2, projects, needDatas.ToList());
@@ -253,7 +306,7 @@ namespace MonthRevenue
                     actualCardinal = actualCardinal < 0 ? 0 : actualCardinal;
                     decimal cardinalperformance = actualCardinal * rule.Where(w => w.Low <= totalCardinal && w.High > totalCardinal).First().Rate;//业绩提成
                     decimal vipPerformance = needDatas.Sum(RevenueFormula.Performance);//团购提成
-                    decimal totalPerformance = cardinalperformance + vipPerformance;//提成合计(含团购提成）
+                    decimal totalPerformance = cardinalperformance + vipPerformance + basicPay;//提成合计(含团购提成+底薪）
                     decimal socialAmount = employee.SocialAmount;//社保
                     decimal housFund = employee.HousFund;//公积金
                     decimal waterElectricity = 0;//水电费  
@@ -267,6 +320,7 @@ namespace MonthRevenue
                     worksheet.Cell(row, fcolumn++).Value = actualCardinal;
                     worksheet.Cell(row, fcolumn++).Value = cardinalperformance;
                     worksheet.Cell(row, fcolumn++).Value = 0;
+                    worksheet.Cell(row, fcolumn++).Value = basicPay;
                     worksheet.Cell(row, fcolumn++).Value = totalPerformance;
                     worksheet.Cell(row, fcolumn++).Value = socialAmount;
                     worksheet.Cell(row, fcolumn++).Value = housFund;

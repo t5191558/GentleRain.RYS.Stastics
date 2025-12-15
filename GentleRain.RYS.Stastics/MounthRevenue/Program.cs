@@ -1,6 +1,9 @@
-﻿using Serilog;
+using Microsoft.EntityFrameworkCore;
+using MonthRevenue.Repository;
+using Serilog;
 using Serilog.Sinks.File;
 using System.Configuration;
+using System.Windows.Forms;
 
 namespace MounthRevenue
 {
@@ -15,9 +18,20 @@ namespace MounthRevenue
             Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
             .WriteTo.Console()
-            .WriteTo.File(ConfigurationManager.AppSettings["logfile"]?.ToString() ?? "log/log.txt",rollingInterval: RollingInterval.Day)
+            .WriteTo.File(ConfigurationManager.AppSettings["logfile"]?.ToString() ?? "log/log.txt", rollingInterval: RollingInterval.Day)
             .CreateLogger();
             Log.Information("程序启动");
+
+            try
+            {
+                EnsureDatabase();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "数据库初始化失败");
+                MessageBox.Show(ex.Message, "数据库初始化失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             // 添加全局异常处理
             Application.ThreadException += new ThreadExceptionEventHandler(GlobalThreadExceptionHandler);
@@ -28,6 +42,12 @@ namespace MounthRevenue
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             Application.Run(new Form1());
+        }
+
+        private static void EnsureDatabase()
+        {
+            using MonthContext context = new MonthContext();
+            context.Database.Migrate();
         }
 
         private static void GlobalThreadExceptionHandler(object sender, ThreadExceptionEventArgs e)

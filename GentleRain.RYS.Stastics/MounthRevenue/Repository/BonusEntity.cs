@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -31,5 +31,12 @@ namespace MonthRevenue.Repository
         public decimal Rate { get; set; }
 
         private decimal high { get; set; }
+
+        public int BonusMainId { get; set; }
+
+        [Browsable(false)]
+        [ForeignKey(nameof(BonusMainId))]
+        public BonusMainEntity? BonusMain { get; set; }
+
     }
 }

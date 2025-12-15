@@ -1,4 +1,4 @@
-﻿namespace MonthRevenue
+namespace MonthRevenue
 {
     partial class EmployeeForm
     {
@@ -36,6 +36,8 @@
             txtSocial = new TextBox();
             label3 = new Label();
             txtFound = new TextBox();
+            label4 = new Label();
+            cmbBonusMain = new ComboBox();
             btnAdd = new Button();
             btnUpdate = new Button();
             btnDelete = new Button();
@@ -45,10 +47,10 @@
             // dgvEmployee
             // 
             dgvEmployee.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvEmployee.Location = new Point(29, 74);
+            dgvEmployee.Location = new Point(25, 68);
             dgvEmployee.Name = "dgvEmployee";
             dgvEmployee.RowHeadersWidth = 51;
-            dgvEmployee.Size = new Size(1046, 458);
+            dgvEmployee.Size = new Size(915, 389);
             dgvEmployee.TabIndex = 0;
             dgvEmployee.CellDoubleClick += dgvEmployee_CellDoubleClick;
             dgvEmployee.CellEndEdit += dgvEmployee_CellEndEdit;
@@ -56,56 +58,74 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(29, 35);
+            label1.Location = new Point(25, 13);
             label1.Name = "label1";
-            label1.Size = new Size(39, 20);
+            label1.Size = new Size(32, 17);
             label1.TabIndex = 1;
             label1.Text = "姓名";
             // 
             // txtName
             // 
-            txtName.Location = new Point(90, 28);
+            txtName.Location = new Point(79, 10);
             txtName.Name = "txtName";
-            txtName.Size = new Size(125, 27);
+            txtName.Size = new Size(110, 23);
             txtName.TabIndex = 2;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(242, 35);
+            label2.Location = new Point(212, 13);
             label2.Name = "label2";
-            label2.Size = new Size(39, 20);
+            label2.Size = new Size(32, 17);
             label2.TabIndex = 3;
             label2.Text = "社保";
             // 
             // txtSocial
             // 
-            txtSocial.Location = new Point(304, 28);
+            txtSocial.Location = new Point(266, 10);
             txtSocial.Name = "txtSocial";
-            txtSocial.Size = new Size(125, 27);
+            txtSocial.Size = new Size(110, 23);
             txtSocial.TabIndex = 4;
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(474, 35);
+            label3.Location = new Point(415, 13);
             label3.Name = "label3";
-            label3.Size = new Size(55, 20);
+            label3.Size = new Size(44, 17);
             label3.TabIndex = 5;
             label3.Text = "公积金";
             // 
             // txtFound
             // 
-            txtFound.Location = new Point(554, 28);
+            txtFound.Location = new Point(485, 10);
             txtFound.Name = "txtFound";
-            txtFound.Size = new Size(125, 27);
+            txtFound.Size = new Size(110, 23);
             txtFound.TabIndex = 6;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(25, 41);
+            label4.Name = "label4";
+            label4.Size = new Size(56, 17);
+            label4.TabIndex = 10;
+            label4.Text = "提成方案";
+            // 
+            // cmbBonusMain
+            // 
+            cmbBonusMain.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbBonusMain.FormattingEnabled = true;
+            cmbBonusMain.Location = new Point(105, 38);
+            cmbBonusMain.Name = "cmbBonusMain";
+            cmbBonusMain.Size = new Size(176, 25);
+            cmbBonusMain.TabIndex = 11;
             // 
             // btnAdd
             // 
-            btnAdd.Location = new Point(740, 28);
+            btnAdd.Location = new Point(648, 24);
             btnAdd.Name = "btnAdd";
-            btnAdd.Size = new Size(94, 29);
+            btnAdd.Size = new Size(82, 25);
             btnAdd.TabIndex = 7;
             btnAdd.Text = "新增";
             btnAdd.UseVisualStyleBackColor = true;
@@ -113,9 +133,9 @@
             // 
             // btnUpdate
             // 
-            btnUpdate.Location = new Point(879, 31);
+            btnUpdate.Location = new Point(769, 26);
             btnUpdate.Name = "btnUpdate";
-            btnUpdate.Size = new Size(94, 29);
+            btnUpdate.Size = new Size(82, 25);
             btnUpdate.TabIndex = 8;
             btnUpdate.Text = "修改";
             btnUpdate.UseVisualStyleBackColor = true;
@@ -123,9 +143,9 @@
             // 
             // btnDelete
             // 
-            btnDelete.Location = new Point(1004, 33);
+            btnDelete.Location = new Point(878, 28);
             btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(94, 29);
+            btnDelete.Size = new Size(82, 25);
             btnDelete.TabIndex = 9;
             btnDelete.Text = "删除";
             btnDelete.UseVisualStyleBackColor = true;
@@ -133,9 +153,11 @@
             // 
             // EmployeeForm
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1140, 561);
+            ClientSize = new Size(998, 477);
+            Controls.Add(cmbBonusMain);
+            Controls.Add(label4);
             Controls.Add(btnDelete);
             Controls.Add(btnUpdate);
             Controls.Add(btnAdd);
@@ -164,6 +186,8 @@
         private TextBox txtSocial;
         private Label label3;
         private TextBox txtFound;
+        private Label label4;
+        private ComboBox cmbBonusMain;
         private Button btnAdd;
         private Button btnUpdate;
         private Button btnDelete;
